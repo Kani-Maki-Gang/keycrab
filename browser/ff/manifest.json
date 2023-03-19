@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "name": "keycrab",
+  "version": "0.1.0",
+
+  "description": "Firefox extensions to communicate wiht the keycrab daemon",
+
+  "icons": {
+    "48": "icons/border-48.png"
+  },
+
+  "browser_action": {
+      "default_icon": "icons/kc.jpeg",
+      "theme_icons": [{
+          "light": "icons/kc.jpeg",
+          "dark": "icons/kc.jpeg",
+          "size": 32
+      }],
+      "default_title": "keycrab",
+      "default_popup": "popup/keycrab.html"
+  },
+
+  "permissions":[
+      "activeTab",
+      "tabs",
+      "notifications",
+      "<all_urls>"
+  ]
+}
+
