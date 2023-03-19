@@ -1,16 +1,14 @@
 use crate::traits::CryptoProvider;
-use anyhow::{Result, anyhow};
+use anyhow::{anyhow, Result};
 use gpgme::{Context, Protocol};
 
 pub struct GpgProxy {
-    pub user: String
+    pub user: String,
 }
 
 impl GpgProxy {
     pub fn new(user: String) -> GpgProxy {
-        Self {
-            user
-        }
+        Self { user }
     }
 }
 
@@ -22,9 +20,9 @@ impl CryptoProvider for GpgProxy {
         let recipients = vec![self.user.to_string()];
         let keys = if !recipients.is_empty() {
             ctx.find_keys(recipients)?
-            .filter_map(|x| x.ok())
-            .filter(|k| k.can_encrypt())
-            .collect()
+                .filter_map(|x| x.ok())
+                .filter(|k| k.can_encrypt())
+                .collect()
         } else {
             Vec::new()
         };
@@ -32,7 +30,9 @@ impl CryptoProvider for GpgProxy {
         let mut output = Vec::new();
         ctx.encrypt(&keys, payload, &mut output)
             .map(|r| format!("{:?}", r))
-            .map_err(|e| anyhow!(e))
+            .map_err(|e| anyhow!(e))?;
+
+        String::from_utf8(output).map_err(|e| anyhow!(e))
     }
 
     fn decrypt(&self, payload: String) -> Result<String> {
@@ -40,6 +40,8 @@ impl CryptoProvider for GpgProxy {
         let mut output = Vec::new();
         ctx.decrypt(payload, &mut output)
             .map(|r| format!("{:?}", r))
-            .map_err(|e| anyhow!(e))
+            .map_err(|e| anyhow!(e))?;
+
+        String::from_utf8(output).map_err(|e| anyhow!(e))
     }
 }

@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize)]
 pub struct PasswordResponse {
@@ -8,5 +8,7 @@ pub struct PasswordResponse {
 
 #[derive(Serialize, Deserialize)]
 pub struct PasswordCreateResponse {
-    pub ok: bool,
+    pub domain: String,
+    pub username: String,
+    pub password: String,
 }

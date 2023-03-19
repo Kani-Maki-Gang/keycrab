@@ -1,2 +1,2 @@
+pub mod machine_users;
 pub mod passwords;
-pub mod users;

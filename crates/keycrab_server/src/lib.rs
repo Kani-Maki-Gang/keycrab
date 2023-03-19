@@ -1,29 +1,39 @@
-mod layers;
+mod requests;
 mod responses;
 mod routes;
-mod requests;
+mod state;
 
 use anyhow::{anyhow, Result};
-use axum::{Extension, Router};
-use keycrab_crypt::traits::CryptoProvider;
-use keycrab_core::traits::IntoArc;
-use routes::{passwords, users};
+use axum::Router;
+use keycrab_core::{machine_users::MachineUser, traits::IntoArc};
+use routes::{machine_users, passwords};
+use state::ApplicationState;
+use std::sync::Arc;
 use tracing::info;
-use layers::database::DatabaseLayer;
+
+use crate::state::{config::Configuration, database::DatabasePool};
 
 /// Define for each group of routes a router method and merge it here.
-fn api_router() -> Router {
-    users::router().merge(passwords::router())
+fn api_router() -> Router<Arc<ApplicationState>> {
+    machine_users::router().merge(passwords::router())
+}
+
+async fn api_state(host: &str, port: &str, database: &str) -> Result<Arc<ApplicationState>> {
+    let config = Configuration::new(host, port, database);
+    let pool = DatabasePool::new(database).await?;
+    let mut conn = pool.get().await?;
+    let machine_user = MachineUser::get_from_sys(&mut conn).await?;
+    Ok(ApplicationState::new(config, pool, machine_user).into_arc())
 }
 
 pub async fn start(host: &str, port: &str, database: &str) -> Result<()> {
     tracing_subscriber::fmt::init();
 
-    // initialize layers.
-    let database_layer = DatabaseLayer::new(database).await?.into_arc();
+    // initialize state.
+    let state = api_state(host, port, database).await?;
 
     // initialize app.
-    let app = api_router().layer(Extension(database_layer));
+    let app = api_router().with_state(state);
 
     // start server.
     let url = format!("{host}:{port}");
