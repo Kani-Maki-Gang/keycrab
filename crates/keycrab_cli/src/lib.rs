@@ -1,15 +1,12 @@
 mod server;
-mod test;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
 
 use server::ServerCommand;
-use test::TestCommand;
 
 #[derive(Subcommand)]
 pub enum Commands {
-    Test(TestCommand),
     Server(ServerCommand),
 }
 
@@ -23,7 +20,6 @@ pub struct Cli {
 impl Cli {
     pub async fn execute(self) -> Result<()> {
         match self.commands {
-            Commands::Test(command) => command.execute().await,
             Commands::Server(command) => command.execute().await,
         }
     }

@@ -1,5 +1,9 @@
+use std::{fs::File, path::Path};
+
 use anyhow::{anyhow, Result};
-use sqlx::{sqlite::SqlitePoolOptions, Connection, SqliteConnection, SqlitePool, Executor};
+use sqlx::{sqlite::SqlitePoolOptions, Connection, SqliteConnection, SqlitePool};
+
+use crate::{machine_users::MachineUser, passwords::Password};
 
 pub async fn new_connection(database: &str) -> Result<SqliteConnection> {
     SqliteConnection::connect(database)
@@ -8,25 +12,22 @@ pub async fn new_connection(database: &str) -> Result<SqliteConnection> {
 }
 
 pub async fn new_pool(database: &str) -> Result<SqlitePool> {
-    SqlitePoolOptions::new()
+    let path = Path::new(database);
+    if !path.is_file() {
+        let _ = File::create(path)?;
+    }
+
+    let pool = SqlitePoolOptions::new()
         .max_connections(20)
         .connect(database)
         .await
-        .map_err(|e| anyhow!(e))
-}
+        .map_err(|e| anyhow!(e))?;
 
-pub async fn simple_sqlite_connection(conn_string: &str) -> Result<SqliteConnection> {
-    SqliteConnection::connect(conn_string)
-        .await
-        .map_err(|e| anyhow!(e))
-}
+    let mut conn = pool.acquire().await?;
 
-pub async fn create_mock_table(conn: &mut SqliteConnection) -> Result<()> {
-    sqlx::query("create table mock_table(id text primary key)")
-        .execute(conn)
-        .await
-        .map(|x| {
-            dbg!(x);
-        })
-        .map_err(|e| anyhow!(e))
+    // [kostas-vl] TODO: add migrations for tables.
+    MachineUser::create_table(&mut conn).await?;
+    Password::create_table(&mut conn).await?;
+
+    Ok(pool)
 }

@@ -16,3 +16,4 @@ tokio = "1.26.0"
 sqlx = { version = "0.6.2", features = ["sqlite"] }
 tracing = "0.1.37"
 tracing-subscriber = "0.3.16"
+nix = "0.26.2"

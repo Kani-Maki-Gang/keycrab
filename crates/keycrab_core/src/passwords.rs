@@ -1,12 +1,18 @@
-#[allow(dead_code)]
 use anyhow::{anyhow, Result};
-use sqlx::{query, query_as, FromRow, SqliteConnection, SqlitePool};
+use sqlx::{query, query_as, FromRow, SqliteConnection};
+
+const CREATE_TABLE_QUERY: &str = include_str!("../queries/passwords/create.sql");
+const INSERT_QUERY: &str = include_str!("../queries/passwords/insert.sql");
+const DELETE_QUERY: &str = include_str!("../queries/passwords/delete.sql");
+const GET_BY_USER_ID_QUERY: &str = include_str!("../queries/passwords/get_by_user_id.sql");
+const GET_BY_DOMAIN_QUERY: &str = include_str!("../queries/passwords/get_by_domain.sql");
 
 #[derive(FromRow)]
 pub struct Password {
-    pub id: String,
+    pub rowid: i32,
+    pub machine_user_id: String,
     pub domain: String,
-    pub user_id: String,
+    pub username: String,
     pub password: String,
     pub date_created: String,
     pub date_modified: String,
@@ -14,8 +20,7 @@ pub struct Password {
 
 impl Password {
     pub async fn create_table(conn: &mut SqliteConnection) -> Result<()> {
-        let create_query = include_str!("../../../queries/passwords/create.sql");
-        query(create_query)
+        query(CREATE_TABLE_QUERY)
             .execute(conn)
             .await
             .map(|_| ())
@@ -23,17 +28,16 @@ impl Password {
     }
 
     pub async fn insert(
-        conn: &SqlitePool,
-        id: &str,
-        user_id: &str,
+        conn: &mut SqliteConnection,
+        machine_user_id: &str,
         domain: &str,
+        username: &str,
         password: &str,
     ) -> Result<()> {
-        let insert_query = include_str!("../../../queries/passwords/insert.sql");
-        query(insert_query)
-            .bind(id)
-            .bind(user_id)
+        query(INSERT_QUERY)
+            .bind(machine_user_id)
             .bind(domain)
+            .bind(username)
             .bind(password)
             .execute(conn)
             .await
@@ -41,38 +45,28 @@ impl Password {
             .map_err(|e| anyhow!(e))
     }
 
-    pub async fn delete(conn: &mut SqliteConnection, id: &str) -> Result<()> {
-        let delete_query = include_str!("../../../queries/passwords/delete.sql");
-        query(delete_query)
-            .bind(id)
+    pub async fn delete(conn: &mut SqliteConnection, rowid: &str) -> Result<()> {
+        query(DELETE_QUERY)
+            .bind(rowid)
             .execute(conn)
             .await
             .map(|_| ())
             .map_err(|e| anyhow!(e))
     }
 
-    pub async fn get_by_user_id(
-        conn: &mut SqliteConnection,
-        user_id: &str,
-    ) -> Result<Vec<Password>> {
-        let get_by_user_id_query = include_str!("../../../queries/passwords/get_by_user_id.sql");
-        query_as::<_, Password>(get_by_user_id_query)
-            .bind(user_id)
+    pub async fn get_by_machine_user_id(conn: &mut SqliteConnection, machine_user_id: &str) -> Result<Vec<Self>> {
+        query_as::<_, Self>(GET_BY_USER_ID_QUERY)
+            .bind(machine_user_id)
             .fetch_all(conn)
             .await
             .map_err(|e| anyhow!(e))
     }
 
-    pub async fn get_by_domain(
-        conn: &SqlitePool,
-        domain: &str
-        ) -> Result<Password> {
-        let get_by_domain_query = include_str!("../../../queries/passwords/get_by_domain.sql");
-        query_as::<_, Password>(get_by_domain_query)
+    pub async fn get_by_domain(conn: &mut SqliteConnection, domain: &str) -> Result<Self> {
+        query_as::<_, Self>(GET_BY_DOMAIN_QUERY)
             .bind(domain)
             .fetch_one(conn)
             .await
             .map_err(|e| anyhow!(e))
     }
-
 }

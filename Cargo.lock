@@ -751,6 +751,7 @@ name = "keycrab_core"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "nix",
  "sqlx",
 ]
 
@@ -771,6 +772,7 @@ dependencies = [
  "axum",
  "keycrab_core",
  "keycrab_crypt",
+ "nix",
  "serde",
  "serde_json",
  "sqlx",
@@ -881,6 +883,20 @@ dependencies = [
  "log",
  "wasi 0.11.0+wasi-snapshot-preview1",
  "windows-sys",
+]
+
+[[package]]
+name = "nix"
+version = "0.26.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bfdda3d196821d6af13126e40375cdf7da646a96114af134d5f417a9a1dc8e1a"
+dependencies = [
+ "bitflags",
+ "cfg-if",
+ "libc",
+ "memoffset",
+ "pin-utils",
+ "static_assertions",
 ]
 
 [[package]]
