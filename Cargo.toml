@@ -1,0 +1,23 @@
+[package]
+name = "keycrab"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = [
+    "crates/keycrab_core",
+    "crates/keycrab_crypt",
+    "crates/keycrab_server",
+    "crates/keycrab_cli",
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+keycrab_cli = { path = "crates/keycrab_cli" }
+keycrab_core = { path = "crates/keycrab_core" }
+keycrab_crypt = { path = "crates/keycrab_crypt" }
+keycrab_server = { path = "crates/keycrab_server" }
+anyhow = "1.0.70"
+tokio = { version = "1.26.0", features = ["rt", "macros"] }
+clap = "4.1.10"

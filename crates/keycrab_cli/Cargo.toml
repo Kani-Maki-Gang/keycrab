@@ -1,0 +1,12 @@
+[package]
+name = "keycrab_cli"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+keycrab_core = { path = "../keycrab_core" }
+keycrab_server = { path = "../keycrab_server" }
+anyhow = "1.0.70"
+clap = { version = "4.1.10", features = ["derive"] }
