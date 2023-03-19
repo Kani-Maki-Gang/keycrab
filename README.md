@@ -1,2 +1,2 @@
 # YO
-A _blazingly_ fast password manaager.
+A _babzingly_ fast password manager.
