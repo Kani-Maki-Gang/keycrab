@@ -1,6 +1,6 @@
 use anyhow::{anyhow, Result};
 use nix::unistd::{getuid, User as LinuxUser};
-use sqlx::{query, query_as, FromRow, SqliteConnection, Connection};
+use sqlx::{query, query_as, Connection, FromRow, SqliteConnection};
 
 const CREATE_TABLE_QUERY: &str = include_str!("../queries/machine_users/create.sql");
 const INSERT_QUERY: &str = include_str!("../queries/machine_users/insert.sql");

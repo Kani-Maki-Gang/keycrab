@@ -4,11 +4,12 @@ use gpgme::{Context, Protocol};
 
 pub struct GpgProxy {
     pub user: String,
+    pub fingerprint: String,
 }
 
 impl GpgProxy {
-    pub fn new(user: String) -> GpgProxy {
-        Self { user }
+    pub fn new(user: String, fingerprint: String) -> GpgProxy {
+        Self { user, fingerprint }
     }
 }
 
@@ -22,6 +23,11 @@ impl CryptoProvider for GpgProxy {
             ctx.find_keys(recipients)?
                 .filter_map(|x| x.ok())
                 .filter(|k| k.can_encrypt())
+                .filter(|x| {
+                    x.fingerprint()
+                        .map(|y| y == self.fingerprint)
+                        .unwrap_or_default()
+                })
                 .collect()
         } else {
             Vec::new()

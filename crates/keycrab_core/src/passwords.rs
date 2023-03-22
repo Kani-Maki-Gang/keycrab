@@ -6,6 +6,7 @@ const INSERT_QUERY: &str = include_str!("../queries/passwords/insert.sql");
 const DELETE_QUERY: &str = include_str!("../queries/passwords/delete.sql");
 const GET_BY_USER_ID_QUERY: &str = include_str!("../queries/passwords/get_by_user_id.sql");
 const GET_BY_DOMAIN_QUERY: &str = include_str!("../queries/passwords/get_by_domain.sql");
+const SEARCH_DOMAINS: &str = include_str!("../queries/passwords/search_domains.sql");
 
 #[derive(FromRow)]
 pub struct Password {
@@ -54,7 +55,10 @@ impl Password {
             .map_err(|e| anyhow!(e))
     }
 
-    pub async fn get_by_machine_user_id(conn: &mut SqliteConnection, machine_user_id: &str) -> Result<Vec<Self>> {
+    pub async fn get_by_machine_user_id(
+        conn: &mut SqliteConnection,
+        machine_user_id: &str,
+    ) -> Result<Vec<Self>> {
         query_as::<_, Self>(GET_BY_USER_ID_QUERY)
             .bind(machine_user_id)
             .fetch_all(conn)
@@ -66,6 +70,14 @@ impl Password {
         query_as::<_, Self>(GET_BY_DOMAIN_QUERY)
             .bind(domain)
             .fetch_one(conn)
+            .await
+            .map_err(|e| anyhow!(e))
+    }
+
+    pub async fn search_domains(conn: &mut SqliteConnection, q: &str) -> Result<Vec<Self>> {
+        query_as::<_, Self>(SEARCH_DOMAINS)
+            .bind(q)
+            .fetch_all(conn)
             .await
             .map_err(|e| anyhow!(e))
     }

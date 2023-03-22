@@ -20,25 +20,27 @@ pub struct ServerCommand {
         help = "The path to the keycrab database file."
     )]
     database: Option<String>,
+
+    #[arg(short = 'f', long = "fingerprint", help = "Public key fingerprint")]
+    fingerprint: Option<String>,
 }
 
 impl ServerCommand {
     pub async fn execute(self) -> Result<()> {
-        let host = self
-            .host
-            .map(Ok)
-            .unwrap_or_else(|| var("KEYCRAB_HOST"))?;
+        let host = self.host.map(Ok).unwrap_or_else(|| var("KEYCRAB_HOST"))?;
 
-        let port = self
-            .port
-            .map(Ok)
-            .unwrap_or_else(|| var("KEYCRAB_PORT"))?;
+        let port = self.port.map(Ok).unwrap_or_else(|| var("KEYCRAB_PORT"))?;
 
         let database = self
             .database
             .map(Ok)
             .unwrap_or_else(|| var("KEYCRAB_DATABASE"))?;
 
-        keycrab_server::start(&host, &port, &database).await
+        let fingerprint = self
+            .fingerprint
+            .map(Ok)
+            .unwrap_or_else(|| var("KEYCRAB_FINGERPRINT"))?;
+
+        keycrab_server::start(&host, &port, &database, &fingerprint).await
     }
 }

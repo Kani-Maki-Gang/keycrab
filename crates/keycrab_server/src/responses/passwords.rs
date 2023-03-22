@@ -12,3 +12,8 @@ pub struct PasswordCreateResponse {
     pub username: String,
     pub password: String,
 }
+
+#[derive(Serialize, Deserialize)]
+pub struct DomainSearchResult {
+    pub credentials: Vec<PasswordResponse>,
+}
