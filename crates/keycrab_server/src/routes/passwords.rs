@@ -24,16 +24,14 @@ async fn search_domain_credentials(
     let mut conn = state.pool.get().await?;
     let response = Password::search_domains(&mut conn, &params.q)
         .await
-        .map(|c| {
-            DomainSearchResult {
-                credentials: c
-                    .into_iter()
-                    .map(|p| PasswordResponse {
-                        username: p.username,
-                        password: p.password,
-                    })
-                    .collect(),
-            }
+        .map(|c| DomainSearchResult {
+            credentials: c
+                .into_iter()
+                .map(|p| PasswordResponse {
+                    username: p.username,
+                    password: p.password,
+                })
+                .collect(),
         })?;
 
     Ok(Json(response))
