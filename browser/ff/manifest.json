@@ -10,10 +10,10 @@
     },
 
     "action": {
-        "default_icon": "icons/kc.jpeg",
+        "default_icon": "icons/keycrab-logo-ext.png",
         "theme_icons": [{
-            "light": "icons/kc.jpeg",
-            "dark": "icons/kc.jpeg",
+            "light": "icons/keycrab-logo-ext.png",
+            "dark": "icons/keycrab-logo-ext.png",
             "size": 32
         }],
         "default_title": "keycrab",
