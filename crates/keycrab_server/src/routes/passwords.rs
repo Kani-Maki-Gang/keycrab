@@ -1,16 +1,16 @@
 use std::sync::Arc;
 
 use crate::{
-    requests::passwords::{PasswordCreateRequest, PasswordQuery, SearchQuery},
+    requests::passwords::{PasswordCreateRequest, PasswordIdQuery, SearchQuery},
     responses::{
         errors::ApplicationError,
-        passwords::{DomainSearchResult, PasswordCreateResponse, PasswordResponse},
+        passwords::{DomainInfo, DomainSearchResult, PasswordCreateResponse},
     },
     state::ApplicationState,
 };
 use axum::{
     extract::{Query, State},
-    routing::{get, post},
+    routing::{delete, get, post},
     Json, Router,
 };
 use keycrab_core::passwords::Password;
@@ -22,39 +22,25 @@ async fn search_domain_credentials(
     params: Query<SearchQuery>,
 ) -> Result<Json<DomainSearchResult>, ApplicationError> {
     let mut conn = state.pool.get().await?;
-    let response = Password::search_domains(&mut conn, &params.q)
+    let proxy = GpgProxy::new(
+        state.machine_user.name.clone(),
+        state.config.fingerprint.clone(),
+    );
+    let response = Password::search_domains(&mut conn, &state.machine_user.id, &params.q)
         .await
         .map(|c| DomainSearchResult {
             credentials: c
                 .into_iter()
-                .map(|p| PasswordResponse {
-                    username: p.username,
-                    password: p.password,
+                .flat_map(|p| {
+                    Ok::<DomainInfo, anyhow::Error>(DomainInfo {
+                        id: p.rowid,
+                        domain: p.domain,
+                        username: p.username,
+                        password: proxy.decrypt(p.password)?,
+                    })
                 })
                 .collect(),
         })?;
-
-    Ok(Json(response))
-}
-
-async fn get_domain_credentials(
-    State(state): State<Arc<ApplicationState>>,
-    params: Query<PasswordQuery>,
-) -> Result<Json<PasswordResponse>, ApplicationError> {
-    info!("Received request: {:?}", params);
-
-    let mut conn = state.pool.get().await?;
-    let credentials = Password::get_by_domain(&mut conn, &params.domain).await?;
-
-    let crypto_provider = GpgProxy::new(
-        state.machine_user.name.to_owned(),
-        state.config.fingerprint.clone(),
-    );
-
-    let response = PasswordResponse {
-        username: credentials.username,
-        password: crypto_provider.decrypt(credentials.password)?,
-    };
 
     Ok(Json(response))
 }
@@ -89,10 +75,22 @@ async fn post_domain_credentials(
     Ok(Json(response))
 }
 
+async fn delete_domain_credentials(
+    State(state): State<Arc<ApplicationState>>,
+    Query(q): Query<PasswordIdQuery>,
+) -> Result<(), ApplicationError> {
+    info!("Received request: {:?}", q);
+
+    let mut conn = state.pool.get().await?;
+    Password::delete(&mut conn, &q.id, &state.machine_user.id).await?;
+
+    Ok(())
+}
+
 pub fn router() -> Router<Arc<ApplicationState>> {
     info!("registering the password routes");
     Router::new()
-        .route("/domain", get(get_domain_credentials))
         .route("/domain", post(post_domain_credentials))
+        .route("/domain", delete(delete_domain_credentials))
         .route("/domain/search", get(search_domain_credentials))
 }

@@ -48,7 +48,7 @@ impl GetCommand {
 
         let mut conn = new_connection(&database).await?;
         let machine_user = MachineUser::get_from_sys(&mut conn).await?;
-        let passwords = Password::search_domains(&mut conn, &self.domain).await?;
+        let passwords = Password::search_domains(&mut conn, &machine_user.id, &self.domain).await?;
         let proxy = GpgProxy::new(machine_user.name.clone(), fingerprint);
 
         for entry in passwords.into_iter() {

@@ -2,7 +2,7 @@ use std::env::var;
 
 use anyhow::Result;
 use clap::Args;
-use keycrab_core::{connect::new_connection, passwords::Password, machine_users::MachineUser};
+use keycrab_core::{connect::new_connection, machine_users::MachineUser, passwords::Password};
 
 use crate::env::KEYCRAB_DATABASE;
 
