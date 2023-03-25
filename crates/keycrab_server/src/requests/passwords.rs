@@ -6,6 +6,11 @@ pub struct PasswordQuery {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
+pub struct PasswordIdQuery {
+    pub id: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
 pub struct PasswordCreateRequest {
     pub domain: String,
     pub username: String,

@@ -1,0 +1,4 @@
+pub const KEYCRAB_HOST: &str = "KEYCRAB_HOST";
+pub const KEYCRAB_PORT: &str = "KEYCRAB_PORT";
+pub const KEYCRAB_DATABASE: &str = "KEYCRAB_DATABASE";
+pub const KEYCRAB_FINGERPRINT: &str = "KEYCRAB_FINGERPRINT";

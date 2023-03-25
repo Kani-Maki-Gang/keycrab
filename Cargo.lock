@@ -1396,6 +1396,7 @@ dependencies = [
  "anyhow",
  "clap",
  "keycrab_core",
+ "keycrab_crypt",
  "keycrab_server",
 ]
 

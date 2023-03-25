@@ -46,9 +46,14 @@ impl Password {
             .map_err(|e| anyhow!(e))
     }
 
-    pub async fn delete(conn: &mut SqliteConnection, rowid: &str) -> Result<()> {
+    pub async fn delete(
+        conn: &mut SqliteConnection,
+        rowid: &str,
+        machine_user_id: &str,
+    ) -> Result<()> {
         query(DELETE_QUERY)
             .bind(rowid)
+            .bind(machine_user_id)
             .execute(conn)
             .await
             .map(|_| ())
@@ -74,9 +79,14 @@ impl Password {
             .map_err(|e| anyhow!(e))
     }
 
-    pub async fn search_domains(conn: &mut SqliteConnection, q: &str) -> Result<Vec<Self>> {
+    pub async fn search_domains(
+        conn: &mut SqliteConnection,
+        machine_user_id: &str,
+        domain: &str,
+    ) -> Result<Vec<Self>> {
         query_as::<_, Self>(SEARCH_DOMAINS)
-            .bind(q)
+            .bind(domain)
+            .bind(machine_user_id)
             .fetch_all(conn)
             .await
             .map_err(|e| anyhow!(e))

@@ -37,7 +37,10 @@ A local password manager
 Usage: keycrab <COMMAND>
 
 Commands:
-  server
+  add     Add a new password
+  get     Get a stored password
+  remove  Removes a stored password
+  server  Starts the password manager server
   help    Print this message or the help of the given subcommand(s)
 
 Options:
@@ -45,17 +48,17 @@ Options:
   -V, --version  Print version
 ```
 
-You can query for command specific help, by using `keycrab command help`
+You can query for command specific help, by using `keycrab help command`
 
 
 ```
 Usage: keycrab server [OPTIONS]
 
 Options:
-  -H, --host <HOST>                The server ip address to listen to.
-  -P, --port <PORT>                The server port to listen to.
-  -d, --database <DATABASE>        The path to the keycrab database file.
-  -f, --fingerprint <FINGERPRINT>  Public key fingerprint
+  -H, --host <HOST>                The server ip address to listen to. Can also be set using the KEYCRAB_HOST environment variable.
+  -P, --port <PORT>                The server port to listen to. Can also be set using the KEYCRAB_PORT environment variable.
+  -d, --database <DATABASE>        The path to the keycrab database file. Can also be set using the KEYCRAB_DATABASE environment variable.
+  -f, --fingerprint <FINGERPRINT>  Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable.
   -h, --help                       Print help
 ```
 

@@ -6,4 +6,6 @@ select
     password,
     date_created, date_modified
 from passwords
-where domain LIKE ?
+where
+    domain LIKE ?
+    and machine_user_id = ?
