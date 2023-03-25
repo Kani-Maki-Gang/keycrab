@@ -3,7 +3,7 @@ use std::fmt::Write;
 
 use anyhow::Result;
 use clap::Args;
-use keycrab_core::{machine_users::MachineUser, connect::new_connection, passwords::Password};
+use keycrab_core::{connect::new_connection, machine_users::MachineUser, passwords::Password};
 use keycrab_crypt::{gpg::GpgProxy, traits::CryptoProvider};
 
 use crate::env::{KEYCRAB_DATABASE, KEYCRAB_FINGERPRINT};
@@ -18,14 +18,18 @@ pub struct GetCommand {
     )]
     database: Option<String>,
 
-    #[arg(short = 'f', long = "fingerprint", help = "Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable.")]
+    #[arg(
+        short = 'f',
+        long = "fingerprint",
+        help = "Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable."
+    )]
     fingerprint: Option<String>,
 
     #[arg(
         short = 'D',
         long = "domain",
         help = "The domain for the username/password pair.",
-        required = true,
+        required = true
     )]
     domain: String,
 }
@@ -50,6 +54,7 @@ impl GetCommand {
         for entry in passwords.into_iter() {
             let password = proxy.decrypt(entry.password)?;
             let mut message = String::new();
+            writeln!(message, "{:<10}: {}", "id", entry.rowid)?;
             writeln!(message, "{:<10}: {}", "domain", entry.domain)?;
             writeln!(message, "{:<10}: {}", "username", entry.username)?;
             writeln!(message, "{:<10}: {}", "password", password)?;

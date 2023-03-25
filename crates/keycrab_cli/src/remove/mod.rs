@@ -15,7 +15,11 @@ pub struct RemoveCommand {
     )]
     database: Option<String>,
 
-    #[arg(short = 'f', long = "fingerprint", help = "Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable.")]
+    #[arg(
+        short = 'f',
+        long = "fingerprint",
+        help = "Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable."
+    )]
     fingerprint: Option<String>,
 
     #[arg(

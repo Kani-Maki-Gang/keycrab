@@ -2,6 +2,8 @@ use std::env::var;
 
 use anyhow::Result;
 use clap::Args;
+use keycrab_core::{connect::new_connection, machine_users::MachineUser, passwords::Password};
+use keycrab_crypt::{gpg::GpgProxy, traits::CryptoProvider};
 
 use crate::env::{KEYCRAB_DATABASE, KEYCRAB_FINGERPRINT};
 
@@ -15,7 +17,11 @@ pub struct AddCommand {
     )]
     database: Option<String>,
 
-    #[arg(short = 'f', long = "fingerprint", help = "Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable.")]
+    #[arg(
+        short = 'f',
+        long = "fingerprint",
+        help = "Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable."
+    )]
     fingerprint: Option<String>,
 
     #[arg(
@@ -35,14 +41,28 @@ pub struct AddCommand {
 
 impl AddCommand {
     pub async fn execute(self) -> Result<()> {
-        let _database = self
+        let database = self
             .database
             .map(Ok)
             .unwrap_or_else(|| var(KEYCRAB_DATABASE))?;
-        let _fingerprint = self
+
+        let fingerprint = self
             .fingerprint
             .map(Ok)
             .unwrap_or_else(|| var(KEYCRAB_FINGERPRINT))?;
+
+        let mut conn = new_connection(&database).await?;
+        let machine_user = MachineUser::get_from_sys(&mut conn).await?;
+        let proxy = GpgProxy::new(machine_user.name.clone(), fingerprint);
+        let encrypted_pass = proxy.encrypt(self.password)?;
+        Password::insert(
+            &mut conn,
+            &machine_user.id,
+            &self.domain,
+            &self.username,
+            &encrypted_pass,
+        )
+        .await?;
 
         Ok(())
     }

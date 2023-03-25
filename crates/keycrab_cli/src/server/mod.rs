@@ -14,7 +14,11 @@ pub struct ServerCommand {
     )]
     host: Option<String>,
 
-    #[arg(short = 'P', long = "port", help = "The server port to listen to. Can also be set using the KEYCRAB_PORT environment variable.")]
+    #[arg(
+        short = 'P',
+        long = "port",
+        help = "The server port to listen to. Can also be set using the KEYCRAB_PORT environment variable."
+    )]
     port: Option<String>,
 
     #[arg(
@@ -24,7 +28,11 @@ pub struct ServerCommand {
     )]
     database: Option<String>,
 
-    #[arg(short = 'f', long = "fingerprint", help = "Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable.")]
+    #[arg(
+        short = 'f',
+        long = "fingerprint",
+        help = "Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable."
+    )]
     fingerprint: Option<String>,
 }
 
