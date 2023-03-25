@@ -2,8 +2,9 @@ use std::env::var;
 
 use anyhow::Result;
 use clap::Args;
+use keycrab_core::{connect::new_connection, passwords::Password, machine_users::MachineUser};
 
-use crate::env::{KEYCRAB_DATABASE, KEYCRAB_FINGERPRINT};
+use crate::env::KEYCRAB_DATABASE;
 
 #[derive(Args)]
 #[command(about = "Removes a stored password")]
@@ -16,15 +17,8 @@ pub struct RemoveCommand {
     database: Option<String>,
 
     #[arg(
-        short = 'f',
-        long = "fingerprint",
-        help = "Public key fingerprint. Can also be set using the KEYCRAB_FINGERPRINT environment variable."
-    )]
-    fingerprint: Option<String>,
-
-    #[arg(
-        short = 'D',
-        long = "domain",
+        short = 'i',
+        long = "id",
         help = "The id of the password in the provided database. Use a subcommand such as 'get' to find it if not known.",
         required = true
     )]
@@ -33,14 +27,14 @@ pub struct RemoveCommand {
 
 impl RemoveCommand {
     pub async fn execute(self) -> Result<()> {
-        let _database = self
+        let database = self
             .database
             .map(Ok)
             .unwrap_or_else(|| var(KEYCRAB_DATABASE))?;
-        let _fingerprint = self
-            .fingerprint
-            .map(Ok)
-            .unwrap_or_else(|| var(KEYCRAB_FINGERPRINT))?;
+
+        let mut conn = new_connection(&database).await?;
+        let machine_user = MachineUser::get_from_sys(&mut conn).await?;
+        Password::delete(&mut conn, &self.id, &machine_user.id).await?;
 
         Ok(())
     }

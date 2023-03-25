@@ -46,9 +46,10 @@ impl Password {
             .map_err(|e| anyhow!(e))
     }
 
-    pub async fn delete(conn: &mut SqliteConnection, rowid: &str) -> Result<()> {
+    pub async fn delete(conn: &mut SqliteConnection, rowid: &str, machine_user_id: &str) -> Result<()> {
         query(DELETE_QUERY)
             .bind(rowid)
+            .bind(machine_user_id)
             .execute(conn)
             .await
             .map(|_| ())
