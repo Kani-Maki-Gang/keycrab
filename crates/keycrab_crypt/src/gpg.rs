@@ -34,9 +34,7 @@ impl CryptoProvider for GpgProxy {
         };
 
         let mut output = Vec::new();
-        ctx.encrypt(&keys, payload, &mut output)
-            .map(|r| format!("{:?}", r))
-            .map_err(|e| anyhow!(e))?;
+        ctx.encrypt(&keys, payload, &mut output)?;
 
         String::from_utf8(output).map_err(|e| anyhow!(e))
     }
@@ -44,9 +42,7 @@ impl CryptoProvider for GpgProxy {
     fn decrypt(&self, payload: String) -> Result<String> {
         let mut ctx = Context::from_protocol(Protocol::OpenPgp)?;
         let mut output = Vec::new();
-        ctx.decrypt(payload, &mut output)
-            .map(|r| format!("{:?}", r))
-            .map_err(|e| anyhow!(e))?;
+        ctx.decrypt(payload, &mut output)?;
 
         String::from_utf8(output).map_err(|e| anyhow!(e))
     }

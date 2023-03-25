@@ -1,7 +1,10 @@
 use std::env::var;
+use std::fmt::Write;
 
 use anyhow::Result;
 use clap::Args;
+use keycrab_core::{machine_users::MachineUser, connect::new_connection, passwords::Password};
+use keycrab_crypt::{gpg::GpgProxy, traits::CryptoProvider};
 
 use crate::env::{KEYCRAB_DATABASE, KEYCRAB_FINGERPRINT};
 
@@ -21,24 +24,37 @@ pub struct GetCommand {
     #[arg(
         short = 'D',
         long = "domain",
-        help = "The domain for the username/password pair."
+        help = "The domain for the username/password pair.",
+        required = true,
     )]
-    domain: Option<String>,
-
-    #[arg(short = 'U', long = "username")]
-    username: Option<String>,
+    domain: String,
 }
 
 impl GetCommand {
     pub async fn execute(self) -> Result<()> {
-        let _database = self
+        let database = self
             .database
             .map(Ok)
             .unwrap_or_else(|| var(KEYCRAB_DATABASE))?;
-        let _fingerprint = self
+
+        let fingerprint = self
             .fingerprint
             .map(Ok)
             .unwrap_or_else(|| var(KEYCRAB_FINGERPRINT))?;
+
+        let mut conn = new_connection(&database).await?;
+        let machine_user = MachineUser::get_from_sys(&mut conn).await?;
+        let passwords = Password::search_domains(&mut conn, &self.domain).await?;
+        let proxy = GpgProxy::new(machine_user.name.clone(), fingerprint);
+
+        for entry in passwords.into_iter() {
+            let password = proxy.decrypt(entry.password)?;
+            let mut message = String::new();
+            writeln!(message, "{:<10}: {}", "domain", entry.domain)?;
+            writeln!(message, "{:<10}: {}", "username", entry.username)?;
+            writeln!(message, "{:<10}: {}", "password", password)?;
+            println!("{message}");
+        }
 
         Ok(())
     }
