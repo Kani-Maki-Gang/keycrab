@@ -52,7 +52,7 @@ You can query for command specific help, by using `keycrab help command`
 
 
 ```
-``Usage: keycrab server [OPTIONS]
+Usage: keycrab server [OPTIONS]
 
 Options:
   -H, --host <HOST>                The server ip address to listen to. Can also be set using the KEYCRAB_HOST environment variable.
