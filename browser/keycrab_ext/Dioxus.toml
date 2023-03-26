@@ -9,16 +9,17 @@ name = "keycrab_ext"
 default_platform = "web"
 
 # Web `build` & `serve` dist path
-out_dir = "../dist"
+out_dir = "dist"
 
 # resource (static) file folder
-asset_dir = "public"
+asset_dir = "scripts"
 
 [web.app]
 
 # HTML title tag content
 title = "Dioxus | An elegant GUI library for Rust"
 
+index_template = "public/index.html"
 index_on_404 = true
 
 [web.watcher]
