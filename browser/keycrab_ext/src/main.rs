@@ -1,13 +1,25 @@
+#![allow(non_snake_case)]
+
 use dioxus::prelude::*;
 
 fn main() {
-    dioxus_web::launch(app);
+    dioxus_web::launch(App);
 }
 
-fn app(cx: Scope) -> Element {
+fn Counter(cx: Scope) -> Element {
+    let count = use_state(&cx, || 0);
+
     cx.render(rsx! {
-        div {
-            "Hello, World!"
+        button {
+            class: "bg-current",
+            onclick: move |_| count.set(count + 1),
+            "Reset {count}"
         }
+    })
+}
+
+fn App(cx: Scope) -> Element {
+    cx.render(rsx! {
+        Counter{},
     })
 }
