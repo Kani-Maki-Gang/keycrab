@@ -23,7 +23,8 @@
     "permissions":[
         "activeTab",
         "tabs",
-        "notifications"
+        "notifications",
+        "scripting"
     ],
 
     "host_permissions": [
