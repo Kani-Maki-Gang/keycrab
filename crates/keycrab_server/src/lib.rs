@@ -4,10 +4,11 @@ mod routes;
 mod state;
 
 use anyhow::{anyhow, Result};
-use axum::Router;
+use axum::{Router, http::Method};
 use keycrab_core::{machine_users::MachineUser, traits::IntoArc};
 use routes::{machine_users, passwords};
 use state::ApplicationState;
+use tower_http::cors::{Any, CorsLayer};
 use std::sync::Arc;
 use tracing::info;
 
@@ -37,12 +38,17 @@ pub async fn start(host: &str, port: &str, database: &str, fingerprint: &str) ->
     // initialize state.
     let state = api_state(host, port, database, fingerprint).await?;
 
+    let cors = CorsLayer::new()
+        .allow_methods([Method::GET, Method::POST])
+        .allow_origin(Any);
+
     // initialize app.
-    let app = api_router().with_state(state);
+    let app = api_router()
+        .with_state(state)
+        .layer(cors);
 
     // start server.
     let url = format!("{host}:{port}");
-
     info!("listening on {url}");
     axum::Server::bind(&url.parse()?)
         .serve(app.into_make_service())
