@@ -8,6 +8,8 @@ use serde_wasm_bindgen::{from_value, to_value};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
+const BUTTON_CLASS: &str = "p-3 border border-black text-2xl uppercase rounded-full rounded-br-none outline-none shadow-lg hover:shadow-xl hover:rounded-full duration-200";
+
 #[derive(Serialize, Deserialize)]
 struct Credential {
     id: i32,
@@ -152,7 +154,7 @@ fn Counter(cx: Scope) -> Element {
 
     cx.render(rsx! {
         button {
-            class: "bg-current",
+            class: BUTTON_CLASS,
             onclick: move |_|  {
                 let _ = use_future(cx, (), |_| async move {
                     if let Err(e) = get_login_for_current_tab().await {
@@ -161,7 +163,10 @@ fn Counter(cx: Scope) -> Element {
                 }).value();
                 count.set(count + 1);
             },
-            "Reset {count}"
+            h1 {
+                class: "text-3xl font-bold underline",
+                "Reset {count}"
+            }
         }
     })
 }
