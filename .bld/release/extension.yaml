@@ -1,0 +1,31 @@
+runs_on: machine
+version: 2
+
+jobs:
+  main:
+  - name: Build with dioxus
+    working_dir: ${{bld_project_dir}}/browser/keycrab_ext
+    exec:
+    - dioxus build --release
+
+  - name: Rerun tailwind build with release
+    working_dir: ${{bld_project_dir}}/browser/keycrab_ext/scripts
+    exec:
+    - npm run build-release
+
+  - name: Remove any old files
+    working_dir: ${{bld_project_dir}}/browser/ff
+    exec:
+    - rm -r ./assets || true
+    - rm ./index.html || true
+    - rm ./index.js || true
+    - rm ./tailwind.css || true
+    - rm ./fill_form.js || true
+
+  - name: Copy artifacts
+    working_dir: ${{bld_project_dir}}/browser
+    exec: 
+      - cp ./keycrab_ext/dist/index.html ff/
+      - cp ./keycrab_ext/dist/tailwind.css ff/
+      - cp ./keycrab_ext/dist/index.js ff/
+      - cp ./keycrab_ext/dist/fill_form.js ff/

@@ -1,6 +1,7 @@
 {
     "scripts": {
-        "build": "tailwindcss -i styles.css -o tailwind.css"
+        "build": "tailwindcss -i styles.css -o tailwind.css",
+        "build-release": "tailwindcss -i styles.css -o tailwind.css --minify"
     },
     "devDependencies": {
         "tailwindcss": "^3.2.7"
