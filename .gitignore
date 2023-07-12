@@ -4,6 +4,7 @@
 /.bld/*
 !/.bld/config.yaml
 !/.bld/release
+/dist/*
 /browser/ff/**/*
 !/browser/ff/icons
 !/browser/ff/manifest.json
