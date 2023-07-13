@@ -5,6 +5,5 @@ fn main() -> io::Result<()> {
         .current_dir("./scripts")
         .args(&["run", "build"])
         .spawn()?;
-
     Ok(())
 }

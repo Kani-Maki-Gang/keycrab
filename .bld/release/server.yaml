@@ -1,0 +1,6 @@
+runs_on: machine
+version: 2
+
+jobs:
+  main:
+  - cargo build --release
