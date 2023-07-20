@@ -23,9 +23,11 @@ jobs:
     - rm ./fill_form.js || true
 
   - name: Copy artifacts
-    working_dir: ${{bld_project_dir}}/browser
+    working_dir: ${{bld_project_dir}}/browser/keycrab_ext/dist
     exec: 
-      - cp ./keycrab_ext/dist/index.html ff/
-      - cp ./keycrab_ext/dist/tailwind.css ff/
-      - cp ./keycrab_ext/dist/index.js ff/
-      - cp ./keycrab_ext/dist/fill_form.js ff/
+      - mkdir ${{bld_project_dir}}/dist/extension || true
+      - cp -r ./assets ${{bld_project_dir}}/dist/extension
+      - cp ./index.html ${{bld_project_dir}}/dist/extension
+      - cp ./tailwind.css ${{bld_project_dir}}/dist/extension
+      - cp ./index.js ${{bld_project_dir}}/dist/extension
+      - cp ./fill_form.js ${{bld_project_dir}}/dist/extension
