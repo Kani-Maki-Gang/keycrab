@@ -51,12 +51,14 @@ async fn get_domains() -> Result<Vec<DomainInfo>> {
 
 pub fn Domains(cx: Scope) -> Element {
     let load_fut = use_future(cx, (), |_| async move { get_domains().await });
-    let value = load_fut.value();
-    cx.render(match value {
+    cx.render(match load_fut.value() {
         Some(Ok(domains)) => rsx! {
-            for entry in domains.iter() {
-                DomainCard {
-                    domain: entry
+            div {
+                class: "flex flex-col",
+                for entry in domains.iter() {
+                    DomainCard {
+                        domain: entry
+                    }
                 }
             }
         },

@@ -10,26 +10,25 @@ pub struct DomainCardProps<'a> {
 pub fn DomainCard<'a>(cx: Scope<'a, DomainCardProps<'a>>) -> Element<'a> {
     cx.render(rsx! {
         div {
-            class: "align-center p-4",
+            class: "align-center",
             div {
-                class: "bg-slate-600 rounded m-4",
+                class: "bg-slate-600 rounded m-1 p-2",
                 div {
-                    class: "flex",
+                    class: "grid grid-cols-2",
                     div {
                         "Domain:"
                     },
                     div {
-                        class: "grow ml-4",
                         "{cx.props.domain.url}"
                     }
                 },
                 div {
-                    class: "flex",
+                    class: "grid grid-cols-2",
                     div {
                         "Username:"
                     },
                     div {
-                        class: "grow ml-4",
+                        class: "grow mt-4",
                         "{cx.props.domain.username}"
                     }
                 },
