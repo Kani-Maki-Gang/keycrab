@@ -5,8 +5,8 @@ use reqwest::Client;
 use crate::{
     browser::tab,
     components::{
-        domains_error::DomainsError, domains_loading::DomainsLoading, domains_table::DomainsTable,
-        domain_card::DomainCard
+        domain_card::DomainCard, domains_empty::DomainsEmpty, domains_error::DomainsError,
+        domains_loading::DomainsLoading,
     },
     models::domains::{DomainInfo, SearchResponse},
 };
@@ -52,15 +52,18 @@ async fn get_domains() -> Result<Vec<DomainInfo>> {
 pub fn Domains(cx: Scope) -> Element {
     let load_fut = use_future(cx, (), |_| async move { get_domains().await });
     cx.render(match load_fut.value() {
-        Some(Ok(domains)) => rsx! {
+        Some(Ok(domains)) if domains.len() > 0 => rsx! {
             div {
-                class: "flex flex-col",
+                class: "w-full flex flex-col p-4",
                 for entry in domains.iter() {
                     DomainCard {
                         domain: entry
                     }
                 }
             }
+        },
+        Some(Ok(_)) => rsx! {
+            DomainsEmpty {}
         },
         Some(Err(e)) => rsx! {
             DomainsError {

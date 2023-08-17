@@ -13,9 +13,12 @@ fn App(cx: Scope) -> Element {
     script::load(cx);
 
     cx.render(rsx! {
-        div {
-            class: "w-96 h-96 bg-slate-800 flex flex-row align-center",
-            Domains {}
+        body {
+            class: "w-[28rem] h-full bg-slate-800",
+            div {
+                class: "w-full h-full flex flex-row align-center",
+                Domains {}
+            }
         }
     })
 }

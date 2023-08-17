@@ -1,10 +1,10 @@
 use dioxus::prelude::*;
 
-use crate::{models::domains::DomainInfo, components::fill::FillBtn};
+use crate::{components::fill::FillBtn, models::domains::DomainInfo};
 
 #[derive(Props)]
 pub struct DomainCardProps<'a> {
-    domain: &'a DomainInfo
+    domain: &'a DomainInfo,
 }
 
 pub fn DomainCard<'a>(cx: Scope<'a, DomainCardProps<'a>>) -> Element<'a> {
@@ -12,26 +12,27 @@ pub fn DomainCard<'a>(cx: Scope<'a, DomainCardProps<'a>>) -> Element<'a> {
         div {
             class: "align-center",
             div {
-                class: "bg-slate-600 rounded m-1 p-2",
-                div {
-                    class: "grid grid-cols-2",
-                    div {
-                        "Domain:"
-                    },
-                    div {
-                        "{cx.props.domain.url}"
-                    }
-                },
+                class: "w-full drop-shadow bg-slate-600 rounded m-1 p-2",
                 div {
                     class: "grid grid-cols-2",
                     div {
                         "Username:"
                     },
                     div {
-                        class: "grow mt-4",
+                        class: "grow",
                         "{cx.props.domain.username}"
                     }
                 },
+                div {
+                    class: "grid grid-cols-2",
+                    div {
+                        "Password:"
+                    },
+                    div {
+                        class: "grow",
+                        "***********"
+                    }
+                }
                 div {
                     class: "mt-4",
                     FillBtn {}
