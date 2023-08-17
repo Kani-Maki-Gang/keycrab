@@ -1,7 +1,6 @@
 use anyhow::{anyhow, Result};
 use sqlx::{query, query_as, FromRow, SqliteConnection};
 
-const CREATE_TABLE_QUERY: &str = include_str!("../queries/passwords/create.sql");
 const INSERT_QUERY: &str = include_str!("../queries/passwords/insert.sql");
 const DELETE_QUERY: &str = include_str!("../queries/passwords/delete.sql");
 const GET_BY_USER_ID_QUERY: &str = include_str!("../queries/passwords/get_by_user_id.sql");
@@ -20,14 +19,6 @@ pub struct Password {
 }
 
 impl Password {
-    pub async fn create_table(conn: &mut SqliteConnection) -> Result<()> {
-        query(CREATE_TABLE_QUERY)
-            .execute(conn)
-            .await
-            .map(|_| ())
-            .map_err(|e| anyhow!(e))
-    }
-
     pub async fn insert(
         conn: &mut SqliteConnection,
         machine_user_id: &str,
