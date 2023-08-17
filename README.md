@@ -19,6 +19,10 @@ You can build the project by invoking cargo:
 
  `cargo build`
 
+# Migrations
+
+Use the sqlx cli to operate on the migrations directory of the `keycrab_core` crate. The server will run any pending migrations on each run.
+
 # Setting up your local environment for development
 
 In order to run the local service, you need the following environment variables defined (or you can invoke it with appropriate command line arguements):
