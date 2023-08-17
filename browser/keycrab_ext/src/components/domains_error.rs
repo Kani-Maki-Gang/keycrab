@@ -9,7 +9,7 @@ pub struct DomainsErrorProps<'a> {
 pub fn DomainsError<'a>(cx: Scope<'a, DomainsErrorProps<'a>>) -> Element<'a> {
     cx.render(rsx! {
         div {
-            class: "w-96 text-gray-300 flex flex-row content-center justify-center",
+            class: "w-full text-gray-300 flex flex-row content-center justify-center p-8",
             "Failed to load information due to {cx.props.error}"
         }
     })

@@ -14,7 +14,7 @@ fn App(cx: Scope) -> Element {
 
     cx.render(rsx! {
         body {
-            class: "w-[28rem] h-full bg-slate-800",
+            class: "w-[28rem] h-full bg-neutral-900",
             div {
                 class: "w-full h-full flex flex-row align-center",
                 Domains {}

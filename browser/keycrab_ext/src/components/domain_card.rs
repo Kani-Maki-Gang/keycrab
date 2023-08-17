@@ -12,7 +12,7 @@ pub fn DomainCard<'a>(cx: Scope<'a, DomainCardProps<'a>>) -> Element<'a> {
         div {
             class: "align-center",
             div {
-                class: "w-full drop-shadow bg-slate-600 rounded m-1 p-2",
+                class: "w-full drop-shadow bg-neutral-700 text-gray-300 rounded m-1 p-2",
                 div {
                     class: "grid grid-cols-2",
                     div {
@@ -35,7 +35,9 @@ pub fn DomainCard<'a>(cx: Scope<'a, DomainCardProps<'a>>) -> Element<'a> {
                 }
                 div {
                     class: "mt-4",
-                    FillBtn {}
+                    FillBtn {
+                        domain: &cx.props.domain
+                    }
                 }
             }
         }
