@@ -2,7 +2,6 @@ use anyhow::{anyhow, Result};
 use nix::unistd::{getuid, User as LinuxUser};
 use sqlx::{query, query_as, Connection, FromRow, SqliteConnection};
 
-const CREATE_TABLE_QUERY: &str = include_str!("../queries/machine_users/create.sql");
 const INSERT_QUERY: &str = include_str!("../queries/machine_users/insert.sql");
 const DELETE_QUERY: &str = include_str!("../queries/machine_users/delete.sql");
 const GET_QUERY: &str = include_str!("../queries/machine_users/get.sql");
@@ -17,14 +16,6 @@ pub struct MachineUser {
 }
 
 impl MachineUser {
-    pub async fn create_table(conn: &mut SqliteConnection) -> Result<()> {
-        query(CREATE_TABLE_QUERY)
-            .execute(conn)
-            .await
-            .map(|_| ())
-            .map_err(|e| anyhow!(e))
-    }
-
     pub async fn insert(conn: &mut SqliteConnection, id: &str, name: &str) -> Result<Self> {
         let mut transaction = conn.begin().await?;
 
