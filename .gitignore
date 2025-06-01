@@ -11,3 +11,5 @@
 /browser/keycrab_ext/scripts/tailwind.css
 /browser/keycrab_ext/scripts/node_modules
 /browser/keycrab_ext/dist
+
+node_modules

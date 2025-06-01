@@ -1,5 +1,7 @@
-#![allow(non_snake_case)]
+mod app;
+mod domain;
 
+<<<<<<< Updated upstream
 mod browser;
 mod components;
 mod models;
@@ -25,4 +27,11 @@ fn App(cx: Scope) -> Element {
 
 fn main() {
     dioxus_web::launch(App);
+=======
+use leptos::prelude::*;
+use app::App;
+
+fn main() {
+    mount_to_body(App);
+>>>>>>> Stashed changes
 }
