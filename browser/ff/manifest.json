@@ -5,10 +5,6 @@
 
     "description": "Firefox extensions to communicate with the keycrab daemon",
 
-    "icons": {
-        "48": "icons/border-48.png"
-    },
-
     "action": {
         "default_icon": "icons/keycrab-logo-ext.png",
         "theme_icons": [{
@@ -25,16 +21,12 @@
         "tabs",
         "notifications",
         "scripting",
-        "webRequest",
-        "<all_urls>"
-    ],
-
-    "host_permissions": [
-        "<all_urls>"
+        "webRequest"
     ],
 
     "content_security_policy": {
-        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+        "extension_pages": "script-src 'self'; object-src 'self';",
+        "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
     }
 }
 

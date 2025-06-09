@@ -1,2 +1,12 @@
 @import "tailwindcss";
 @config "./tailwind.config.js";
+
+@font-face {
+  font-family: 'Homenaje';
+  src: url('font/Homenaje-Regular.ttf') format('truetype');
+}
+
+html {
+  font-family: 'Homenaje', 'sans-serif';
+
+}

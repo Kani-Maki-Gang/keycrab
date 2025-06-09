@@ -2,3 +2,13 @@
 stage = "pre_build"
 command = "bash"
 command_arguments = ["-c", "npx @tailwindcss/cli -i ./styles.css -o $TRUNK_STAGING_DIR/styles.css"]
+
+[[hooks]]
+stage = "post_build"
+command = "sh"
+command_arguments = ["-c", "mkdir $TRUNK_STAGING_DIR/icons && cp ./icons/* $TRUNK_STAGING_DIR/icons"]
+
+[[hooks]]
+stage = "post_build"
+command = "sh"
+command_arguments = ["-c", "mkdir $TRUNK_STAGING_DIR/font && cp ./font/* $TRUNK_STAGING_DIR/font"]
