@@ -84,6 +84,8 @@ impl Password {
         machine_user_id: &str,
         domain: &str,
     ) -> Result<Vec<Self>> {
+        dbg!(&machine_user_id);
+        dbg!(&domain);
         query_as::<_, Self>(SEARCH_DOMAINS)
             .bind(domain)
             .bind(machine_user_id)
