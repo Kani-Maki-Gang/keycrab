@@ -12,3 +12,8 @@ command_arguments = ["-c", "mkdir $TRUNK_STAGING_DIR/icons && cp ./icons/* $TRUN
 stage = "post_build"
 command = "sh"
 command_arguments = ["-c", "mkdir $TRUNK_STAGING_DIR/font && cp ./font/* $TRUNK_STAGING_DIR/font"]
+
+[[hooks]]
+stage = "post_build"
+command = "sh"
+command_arguments = ["-c", "cp ./manifest.json $TRUNK_STAGING_DIR"]
