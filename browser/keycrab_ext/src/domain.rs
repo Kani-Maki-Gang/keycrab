@@ -103,6 +103,36 @@ pub fn Domains() -> impl IntoView {
             username: "test@gmail.com".to_string(),
             password: "test123".to_string(),
         },
+        DomainInfo {
+            id: 122,
+            domain: "https://gmail.com".to_string(),
+            username: "test@gmail.com".to_string(),
+            password: "test123".to_string(),
+        },
+        DomainInfo {
+            id: 13,
+            domain: "https://gmail.com".to_string(),
+            username: "test@gmail.com".to_string(),
+            password: "test123".to_string(),
+        },
+        DomainInfo {
+            id: 14,
+            domain: "https://gmail.com".to_string(),
+            username: "test@gmail.com".to_string(),
+            password: "test123".to_string(),
+        },
+        DomainInfo {
+            id: 15,
+            domain: "https://gmail.com".to_string(),
+            username: "test@gmail.com".to_string(),
+            password: "test123".to_string(),
+        },
+        DomainInfo {
+            id: 16,
+            domain: "https://gmail.com".to_string(),
+            username: "test@gmail.com".to_string(),
+            password: "test123".to_string(),
+        },
     ]);
     view! {
         <div class="flex flex-col divide-y divide-slate-600">
