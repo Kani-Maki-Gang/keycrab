@@ -13,7 +13,7 @@ pub struct PasswordResponse {
     pub password: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct DomainInfo {
     pub id: i32,
     pub domain: String,
@@ -21,7 +21,7 @@ pub struct DomainInfo {
     pub password: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct DomainSearchResult {
     pub credentials: Vec<DomainInfo>,
 }

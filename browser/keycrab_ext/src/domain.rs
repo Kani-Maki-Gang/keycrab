@@ -1,19 +1,6 @@
 use crate::button::Button;
+use keycrab_models::responses::{DomainInfo, DomainSearchResult};
 use leptos::prelude::*;
-use serde::{Deserialize, Serialize};
-
-#[derive(Clone, Serialize, Deserialize)]
-struct DomainSearch {
-    credentials: Vec<DomainInfo>,
-}
-
-#[derive(Clone, Serialize, Deserialize)]
-struct DomainInfo {
-    pub id: i32,
-    pub domain: String,
-    pub username: String,
-    pub password: String,
-}
 
 #[component]
 fn Domain(#[prop(into)] domain_info: DomainInfo) -> impl IntoView {
@@ -45,7 +32,7 @@ pub fn Domains() -> impl IntoView {
             return vec![];
         };
 
-        let Ok(data) = result.json::<DomainSearch>().await else {
+        let Ok(data) = result.json::<DomainSearchResult>().await else {
             return vec![];
         };
 
