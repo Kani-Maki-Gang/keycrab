@@ -1,6 +1,8 @@
 mod app;
 mod button;
+mod context;
 mod domain;
+mod search;
 mod title;
 
 use app::App;

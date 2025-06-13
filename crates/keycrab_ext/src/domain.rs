@@ -1,6 +1,37 @@
-use crate::button::Button;
+use crate::{button::Button, context::SearchContext};
 use keycrab_models::responses::{DomainInfo, DomainSearchResult};
 use leptos::prelude::*;
+use reqwest::Client;
+use serde::{Deserialize, Serialize};
+
+#[derive(Clone, Default, Serialize, Deserialize)]
+struct DomainQuery {
+    q: String,
+}
+
+async fn get_domains(query: String) -> Vec<DomainInfo> {
+    let Ok(builder) = Client::builder().build() else {
+        return vec![];
+    };
+
+    let query = DomainQuery { q: format!("%{query}%")};
+
+    let response = builder
+        .get("http://localhost:3333/domain/search")
+        .query(&query)
+        .send()
+        .await;
+
+    let Ok(response) = response else {
+        return vec![];
+    };
+
+    let Ok(data) = response.json::<DomainSearchResult>().await else {
+        return vec![];
+    };
+
+    data.credentials
+}
 
 #[component]
 fn Domain(#[prop(into)] domain_info: DomainInfo) -> impl IntoView {
@@ -25,18 +56,10 @@ fn Domain(#[prop(into)] domain_info: DomainInfo) -> impl IntoView {
 
 #[component]
 pub fn Domains() -> impl IntoView {
-    let domains = LocalResource::new(async move || {
-        let result = reqwest::get("http://localhost:3333/domain/search?q=%").await;
+    let search_context = use_context::<RwSignal<SearchContext>>();
 
-        let Ok(result) = result else {
-            return vec![];
-        };
-
-        let Ok(data) = result.json::<DomainSearchResult>().await else {
-            return vec![];
-        };
-
-        data.credentials
+    let domains = LocalResource::new(move || {
+        get_domains(search_context.map(|x| x.get().query).unwrap_or_default())
     });
 
     view! {
