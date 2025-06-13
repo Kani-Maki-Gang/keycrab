@@ -4,10 +4,6 @@
 /.bld/*
 !/.bld/config.yaml
 !/.bld/release
-/dist/*
-/browser/ff/
-/browser/keycrab_ext/scripts/tailwind.css
-/browser/keycrab_ext/scripts/node_modules
-/browser/keycrab_ext/dist
+**/*/dist/*
 
 node_modules
