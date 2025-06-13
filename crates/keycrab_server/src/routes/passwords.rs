@@ -1,13 +1,6 @@
 use std::sync::Arc;
 
-use crate::{
-    requests::passwords::{PasswordCreateRequest, PasswordIdQuery, SearchQuery},
-    responses::{
-        errors::ApplicationError,
-        passwords::{DomainInfo, DomainSearchResult, PasswordCreateResponse},
-    },
-    state::ApplicationState,
-};
+use crate::{errors::ApplicationError, state::ApplicationState};
 use axum::{
     extract::{Query, State},
     routing::{delete, get, post},
@@ -15,6 +8,10 @@ use axum::{
 };
 use keycrab_core::passwords::Password;
 use keycrab_crypt::{gpg::GpgProxy, traits::CryptoProvider};
+use keycrab_models::{
+    requests::{PasswordCreateRequest, PasswordIdQuery, SearchQuery},
+    responses::{DomainInfo, DomainSearchResult, PasswordCreateResponse},
+};
 use tracing::info;
 
 async fn search_domain_credentials(

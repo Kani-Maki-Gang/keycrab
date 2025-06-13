@@ -1,10 +1,10 @@
 use crate::button::Button;
 use leptos::prelude::*;
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Serialize, Deserialize)]
 struct DomainSearch {
-    credentials: Vec<DomainInfo>
+    credentials: Vec<DomainInfo>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -39,8 +39,7 @@ fn Domain(#[prop(into)] domain_info: DomainInfo) -> impl IntoView {
 #[component]
 pub fn Domains() -> impl IntoView {
     let domains = LocalResource::new(async move || {
-        let result = reqwest::get("http://localhost:3333/domain/search?q=%")
-            .await;
+        let result = reqwest::get("http://localhost:3333/domain/search?q=%").await;
 
         let Ok(result) = result else {
             return vec![];
