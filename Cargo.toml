@@ -5,7 +5,7 @@ edition = "2021"
 
 [workspace]
 members = [
-    "browser/keycrab_ext",
+    "crates/keycrab_ext",
     "crates/keycrab_core",
     "crates/keycrab_crypt",
     "crates/keycrab_server",
