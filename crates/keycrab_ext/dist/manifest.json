@@ -1,0 +1,32 @@
+{
+    "manifest_version": 3,
+    "name": "keycrab",
+    "version": "0.1.0",
+
+    "description": "Firefox extensions to communicate with the keycrab daemon",
+
+    "action": {
+        "default_icon": "icons/keycrab-logo-ext.png",
+        "theme_icons": [{
+            "light": "icons/keycrab-logo-ext.png",
+            "dark": "icons/keycrab-logo-ext.png",
+            "size": 32
+        }],
+        "default_title": "keycrab",
+        "default_popup": "index.html"
+    },
+
+    "permissions":[
+        "activeTab",
+        "tabs",
+        "notifications",
+        "scripting",
+        "webRequest"
+    ],
+
+    "content_security_policy": {
+        "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
+        "sandbox": "sandbox allow-scripts allow-forms allow-popups allow-modals; script-src 'self' 'unsafe-inline' 'unsafe-eval'; child-src 'self';"
+    }
+}
+
