@@ -2,11 +2,19 @@ use crate::{
     button::IconButton,
     context::SearchContext,
 };
+use js_sys::Promise;
 use keycrab_models::responses::{DomainInfo, DomainSearchResult};
-use leptos::prelude::*;
+use leptos::{leptos_dom::logging::console_log, prelude::*};
 use leptos_use::signal_debounced;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(catch, js_namespace = ["navigator", "clipboard", "writeText"])]
+    fn clipboardWriteText(value: String) -> Result<Promise, JsValue>;
+}
 
 #[derive(Clone, Default, Serialize, Deserialize)]
 struct DomainQuery {
@@ -37,6 +45,12 @@ async fn get_domains(query: String) -> Vec<RwSignal<DomainInfo>> {
     };
 
     data.credentials.into_iter().map(RwSignal::new).collect()
+}
+
+fn write_password_to_clipboard(password: String) {
+    if let Err(value) = clipboardWriteText(password) {
+        console_log(value.as_string().unwrap_or_default().as_str());
+    }
 }
 
 #[component]
@@ -75,7 +89,10 @@ fn Domain(#[prop(into)] domain_info: Signal<DomainInfo>) -> impl IntoView {
                     </div>
                 </div>
                 <IconButton icon="iconoir-input-field" />
-                <IconButton icon="iconoir-copy" />
+                <IconButton
+                    icon="iconoir-copy"
+                    on:click=move |_| write_password_to_clipboard(domain_info.get().password)
+                />
                 <IconButton icon=icon on:click=move |_| show_password.update(|x| *x = !(*x)) />
             </div>
         </div>
