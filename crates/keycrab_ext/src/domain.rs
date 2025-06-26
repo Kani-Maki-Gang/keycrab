@@ -1,6 +1,7 @@
 use crate::{button::Button, context::SearchContext};
 use keycrab_models::responses::{DomainInfo, DomainSearchResult};
 use leptos::prelude::*;
+use leptos_use::signal_debounced;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 
@@ -57,9 +58,13 @@ fn Domain(#[prop(into)] domain_info: DomainInfo) -> impl IntoView {
 #[component]
 pub fn Domains() -> impl IntoView {
     let search_context = use_context::<RwSignal<SearchContext>>();
+    let query = Signal::derive(move || {
+        search_context.map(|x| x.get().query).unwrap_or_default()
+    });
+    let query_debounced = signal_debounced(query, 500.0);
 
     let domains = LocalResource::new(move || {
-        get_domains(search_context.map(|x| x.get().query).unwrap_or_default())
+        get_domains(query_debounced.get())
     });
 
     view! {

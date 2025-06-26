@@ -13,10 +13,10 @@ pub fn Search() -> impl IntoView {
                 id="search"
                 class="p-2 h-[36px] w-full rounded border-1 border-slate-600 bg-gray-800 text-white"
                 placeholder="Search"
-                prop:value=move || { search_context.map(|x| x.get().query).unwrap_or_default() }
-                on:change:target=move |ev| {
+                prop:value=move || search_context.map(|x| x.get().query).unwrap_or_default()
+                on:input=move |ev| {
                     if let Some(search_context) = search_context {
-                        search_context.update(|x| x.query = ev.target().value());
+                        search_context.update(|x| x.query = event_target_value(&ev));
                     }
                 }
             />
