@@ -1,5 +1,5 @@
 use crate::{
-    button::{Button, IconButton},
+    button::IconButton,
     context::SearchContext,
 };
 use keycrab_models::responses::{DomainInfo, DomainSearchResult};
@@ -74,7 +74,8 @@ fn Domain(#[prop(into)] domain_info: Signal<DomainInfo>) -> impl IntoView {
                         {move || password()}
                     </div>
                 </div>
-                <Button>"Fill"</Button>
+                <IconButton icon="iconoir-input-field" />
+                <IconButton icon="iconoir-copy" />
                 <IconButton icon=icon on:click=move |_| show_password.update(|x| *x = !(*x)) />
             </div>
         </div>
