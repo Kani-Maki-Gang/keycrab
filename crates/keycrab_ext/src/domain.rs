@@ -12,8 +12,8 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(catch, js_namespace = ["navigator", "clipboard", "writeText"])]
-    fn clipboardWriteText(value: String) -> Result<Promise, JsValue>;
+    #[wasm_bindgen(js_namespace = ["navigator", "clipboard"])]
+    fn writeText(value: String) -> Promise;
 }
 
 #[derive(Clone, Default, Serialize, Deserialize)]
@@ -48,9 +48,7 @@ async fn get_domains(query: String) -> Vec<RwSignal<DomainInfo>> {
 }
 
 fn write_password_to_clipboard(password: String) {
-    if let Err(value) = clipboardWriteText(password) {
-        console_log(value.as_string().unwrap_or_default().as_str());
-    }
+    let _ = writeText(password);
 }
 
 #[component]

@@ -21,7 +21,8 @@
         "tabs",
         "notifications",
         "scripting",
-        "webRequest"
+        "webRequest",
+        "navigator"
     ],
 
     "content_security_policy": {
