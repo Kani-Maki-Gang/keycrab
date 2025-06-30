@@ -1,8 +1,10 @@
-use crate::{context::SearchContext, domain::Domains, title::Title};
-use leptos::prelude::*;
+use crate::{context::SearchContext, domain::Domains, title::Title, browser};
+use leptos::{prelude::*, task::spawn_local};
 
 #[component]
 pub fn App() -> impl IntoView {
+    spawn_local(browser::script::load_fill_form());
+
     let search = RwSignal::new(SearchContext::default());
 
     provide_context(search);

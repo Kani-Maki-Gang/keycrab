@@ -1,7 +1,9 @@
 mod app;
+mod browser;
 mod button;
 mod context;
 mod domain;
+mod models;
 mod search;
 mod title;
 

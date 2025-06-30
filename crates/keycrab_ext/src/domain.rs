@@ -12,6 +12,9 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(js_namespace = ["document"])]
+    fn getElementById(value: String) -> JsValue;
+
     #[wasm_bindgen(js_namespace = ["navigator", "clipboard"])]
     fn writeText(value: String) -> Promise;
 }
@@ -45,6 +48,11 @@ async fn get_domains(query: String) -> Vec<RwSignal<DomainInfo>> {
     };
 
     data.credentials.into_iter().map(RwSignal::new).collect()
+}
+
+fn fill_credentials(domain: DomainInfo) {
+    let username = getElementById("username".to_string());
+    let password = getElementById("password".to_string());
 }
 
 fn write_password_to_clipboard(password: String) {
