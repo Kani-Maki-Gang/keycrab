@@ -1,43 +1,36 @@
 use anyhow::{Result, anyhow};
-use leptos::{
-    leptos_dom::logging::console_error,
-    task::{spawn_local, spawn_local_scoped},
-};
+use js_sys::Promise;
+use serde_wasm_bindgen::to_value;
 use wasm_bindgen::prelude::*;
+use wasm_bindgen_futures::JsFuture;
 
 use crate::models::script::{ExecuteScriptArgs, InjectionTarget};
-
-use super::tab;
 
 #[wasm_bindgen]
 extern "C" {
     #[wasm_bindgen(js_namespace = console)]
     fn log(s: &str);
 
-    #[wasm_bindgen(catch, js_namespace = ["chrome", "scripting"])]
-    fn executeScript(s: JsValue) -> Result<(), JsValue>;
+    #[wasm_bindgen(catch, js_namespace = ["browser", "scripting"], js_name = "executeScript")]
+    fn browser_execute_script(s: JsValue) -> Result<Promise, JsValue>;
+
+    #[wasm_bindgen(js_namespace = ["chrome", "scripting"], js_name = "executeScript")]
+    fn chrome_execute_script(s: JsValue) -> Promise;
 }
 
-async fn load_fill_form_inner() -> Result<()> {
-    let tabs = tab::query_all().await?;
+pub async fn load_fill_form(tab_id: &i32) -> Result<()> {
+    let args = ExecuteScriptArgs {
+        target: InjectionTarget { tab_id: *tab_id },
+        files: vec!["fill_form.js".to_string()],
+    };
+    let args = to_value(&args).unwrap();
 
-    for tab in tabs {
-        let Some(tab_id) = tab.id else {
-            continue;
-        };
-        let args = ExecuteScriptArgs {
-            target: InjectionTarget { tab_id },
-            files: vec!["fill_form.js".to_string()],
-        };
-        let value = serde_wasm_bindgen::to_value(&args).unwrap();
-        executeScript(value).map_err(|_| anyhow!("unable to load script"))?;
-    }
+    let promise = browser_execute_script(args.clone())
+        .or_else(|_| Ok::<Promise, JsValue>(chrome_execute_script(args)))
+        .map_err(|_| anyhow!("unable to call executeScript"))?;
 
+    JsFuture::from(promise)
+        .await
+        .map_err(|_| anyhow!("unable to load fill_form.js script"))?;
     Ok(())
-}
-
-pub async fn load_fill_form() -> () {
-    if let Err(error) = load_fill_form_inner().await {
-        console_error(error.to_string().as_str());
-    }
 }

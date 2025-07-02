@@ -1,33 +1,39 @@
 use anyhow::{Result, bail};
 use keycrab_models::responses::DomainInfo;
-use leptos::{prelude::*, task::spawn_local};
+use leptos::{leptos_dom::logging::console_error, prelude::*, task::spawn_local};
 
 use crate::{
-    browser::tab::{self, send_fill_args, send_fill_command},
+    browser::{
+        script::load_fill_form,
+        tab::{self, send_fill_command},
+    },
     button::IconButton,
 };
 
 use super::api;
 
 async fn fill_credentials(domain: DomainInfo) -> Result<()> {
-    let active_tab = tab::query_active().await?;
+    let active_tab = tab::get_current().await?;
 
     let Some(active_tab_id) = active_tab.id.as_ref() else {
         bail!("active tab doesn't have an id");
     };
 
+    load_fill_form(active_tab_id).await?;
+
     let password = api::decrypt(domain.domain, domain.username.clone()).await;
 
     if !password.is_empty() {
-        let args = send_fill_args(&domain.username, &password)?;
-        send_fill_command(*active_tab_id, args).await?;
+        send_fill_command(*active_tab_id, &domain.username, &password).await?;
     }
 
     Ok(())
 }
 
 async fn fill(domain: DomainInfo) {
-    let _ = fill_credentials(domain);
+    if let Err(e) = fill_credentials(domain).await {
+        console_error(&e.to_string());
+    }
 }
 
 #[component]

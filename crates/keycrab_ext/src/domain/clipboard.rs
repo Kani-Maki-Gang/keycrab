@@ -7,7 +7,7 @@ use crate::{browser, button::IconButton};
 async fn write_password_to_clipboard(domain: DomainInfo) {
     let password = api::decrypt(domain.domain, domain.username).await;
     if !password.is_empty() {
-        let _ = browser::clipboard::write_text(password);
+        let _ = browser::clipboard::write_text(password).await;
     }
 }
 

@@ -11,60 +11,47 @@ use crate::models::{
 
 #[wasm_bindgen]
 extern "C" {
-    #[wasm_bindgen(catch, js_namespace = ["browser", "tabs"])]
-    fn query(s: JsValue) -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(catch, js_namespace = ["browser", "tabs"], js_name = "query")]
+    fn browser_query(s: JsValue) -> Result<Promise, JsValue>;
 
-    #[wasm_bindgen(catch, js_namespace = ["browser", "tabs"])]
-    fn sendMessage(tabId: i32, args: JsValue) -> Result<JsValue, JsValue>;
+    #[wasm_bindgen(js_namespace = ["chrome", "tabs"], js_name = "query")]
+    fn chrome_query(s: JsValue) -> Promise;
+
+    #[wasm_bindgen(catch, js_namespace = ["browser", "tabs"], js_name = "sendMessage")]
+    fn browser_send_message(tabId: i32, args: JsValue) -> Result<Promise, JsValue>;
+
+    #[wasm_bindgen(js_namespace = ["chrome", "tabs"], js_name = "sendMessage")]
+    fn chrome_send_message(tabId: i32, args: JsValue) -> Promise;
 }
 
-pub async fn query_active() -> Result<Tab> {
-    let tab_query_args = to_value(&TabQueryArgs::new(true))
+pub async fn get_current() -> Result<Tab> {
+    let args = to_value(&TabQueryArgs::new(true, true))
         .map_err(|_| anyhow!("unable to build tab query arguments"))?;
 
-    let tab_query: Promise = query(tab_query_args)
-        .map_err(|_| anyhow!("unable to query active tab"))?
-        .into();
+    let promise = browser_query(args.clone())
+        .or_else(|_| Ok::<Promise, JsValue>(chrome_query(args)))
+        .map_err(|_| anyhow!("unable to call query function"))?;
 
-    let tab_query = JsFuture::from(tab_query)
+    let tabs = JsFuture::from(promise)
         .await
-        .map_err(|_| anyhow!("unable to query active tab"))?;
+        .map_err(|_| anyhow!("unable to retrieve tabs from promise"))?;
 
-    let tabs: Vec<Tab> = from_value(tab_query)
-        .map_err(|_| anyhow!("unable to read response from active tab future"))?;
+    let tab: Vec<Tab> = from_value(tabs).map_err(|e| anyhow!(e.to_string()))?;
 
-    tabs.into_iter()
+    tab.into_iter()
         .next()
-        .ok_or_else(|| anyhow!("No active tab"))
+        .ok_or_else(|| anyhow!("no active tab found"))
 }
 
-pub async fn query_all() -> Result<Vec<Tab>> {
-    let tab_query_args = to_value(&TabQueryArgs::new(true))
-        .map_err(|_| anyhow!("unable to build tab query arguments"))?;
-
-    let tab_query: Promise = query(tab_query_args)
-        .map_err(|_| anyhow!("unable to query tabs"))?
-        .into();
-
-    let tab_query = JsFuture::from(tab_query)
-        .await
-        .map_err(|_| anyhow!("unable to query tabs"))?;
-
-    from_value(tab_query).map_err(|_| anyhow!("unable to read response from tab future"))
-}
-
-pub fn send_fill_args(username: &str, password: &str) -> Result<JsValue> {
+pub async fn send_fill_command(tab_id: i32, username: &str, password: &str) -> Result<()> {
     let args = SendMessageArgs::new("fill", username, password);
+    let args = to_value(&args).map_err(|_| anyhow!("unable to create send message arguments"))?;
 
-    to_value(&args).map_err(|_| anyhow!("unable to create send message arguments"))
-}
+    let promise = browser_send_message(tab_id, args.clone())
+        .or_else(|_| Ok::<Promise, JsValue>(chrome_send_message(tab_id, args)))
+        .map_err(|_| anyhow!("unable to call query function"))?;
 
-pub async fn send_fill_command(tab_id: i32, args: JsValue) -> Result<()> {
-    let send_msg: Promise = sendMessage(tab_id, args)
-        .map_err(|_| anyhow!("unable to create send message promise"))?
-        .into();
-
-    JsFuture::from(send_msg)
+    JsFuture::from(promise)
         .await
         .map_err(|_| anyhow!("send 'fill' message to active tab failed"))?;
 

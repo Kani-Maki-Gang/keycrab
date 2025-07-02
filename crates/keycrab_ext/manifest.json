@@ -22,7 +22,7 @@
         "notifications",
         "scripting",
         "webRequest",
-        "navigator"
+        "clipboardWrite"
     ],
 
     "content_security_policy": {

@@ -3,8 +3,6 @@
     return;
   }
   async function fillForm(d) {
-    const domain = document.documentURI;
-    console.log(d);
     const user = document.getElementById("username");
     const pwd = document.getElementById("password");
     user.value = d.username;
@@ -18,7 +16,11 @@
     pwd.value = "";
   }
 
-  browser.runtime.onMessage.addListener(async (message) => {
+  let handle = window["browser"];
+  if (typeof browser === "undefined") {
+      handle = window["chrome"];
+  }
+  handle.runtime.onMessage.addListener(async (message) => {
     if (message.command === "fill") {
       await fillForm({
         username: message.username,
