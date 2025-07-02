@@ -18,7 +18,6 @@ pub struct DomainInfo {
     pub id: i32,
     pub domain: String,
     pub username: String,
-    pub password: String,
 }
 
 #[derive(Clone, Serialize, Deserialize)]

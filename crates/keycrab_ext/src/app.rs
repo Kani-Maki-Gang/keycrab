@@ -1,4 +1,4 @@
-use crate::{context::SearchContext, domain::Domains, title::Title, browser};
+use crate::{browser, context::SearchContext, domain::Domains, title::Title};
 use leptos::{prelude::*, task::spawn_local};
 
 #[component]

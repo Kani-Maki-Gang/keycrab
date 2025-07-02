@@ -1,7 +1,7 @@
 use anyhow::Error;
 use axum::{http::StatusCode, response::IntoResponse};
 
-pub struct ApplicationError(Error);
+pub struct ApplicationError(pub Error);
 
 impl<E> From<E> for ApplicationError
 where

@@ -21,3 +21,9 @@ pub struct PasswordCreateRequest {
 pub struct SearchQuery {
     pub q: String,
 }
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct DecryptQuery {
+    pub domain: String,
+    pub username: String,
+}

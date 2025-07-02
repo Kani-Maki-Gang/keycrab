@@ -1,5 +1,8 @@
-use anyhow::{anyhow, Result};
-use leptos::{leptos_dom::logging::console_error, task::{spawn_local, spawn_local_scoped}};
+use anyhow::{Result, anyhow};
+use leptos::{
+    leptos_dom::logging::console_error,
+    task::{spawn_local, spawn_local_scoped},
+};
 use wasm_bindgen::prelude::*;
 
 use crate::models::script::{ExecuteScriptArgs, InjectionTarget};
@@ -19,7 +22,9 @@ async fn load_fill_form_inner() -> Result<()> {
     let tabs = tab::query_all().await?;
 
     for tab in tabs {
-        let Some(tab_id) = tab.id else { continue; };
+        let Some(tab_id) = tab.id else {
+            continue;
+        };
         let args = ExecuteScriptArgs {
             target: InjectionTarget { tab_id },
             files: vec!["fill_form.js".to_string()],
@@ -29,7 +34,6 @@ async fn load_fill_form_inner() -> Result<()> {
     }
 
     Ok(())
-
 }
 
 pub async fn load_fill_form() -> () {

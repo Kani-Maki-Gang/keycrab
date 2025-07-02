@@ -1,10 +1,13 @@
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use js_sys::Promise;
 use serde_wasm_bindgen::{from_value, to_value};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;
 
-use crate::models::{message::SendMessageArgs, tab::{Tab, TabQueryArgs}};
+use crate::models::{
+    message::SendMessageArgs,
+    tab::{Tab, TabQueryArgs},
+};
 
 #[wasm_bindgen]
 extern "C" {
