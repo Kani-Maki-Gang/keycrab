@@ -1,8 +1,12 @@
-use leptos::prelude::*;
 use super::input::TextInput;
+use leptos::prelude::*;
 
 #[component]
-pub fn TextField(#[prop(into)] id: Signal<String>, #[prop(into)] label: Signal<String>, #[prop(into)] value: RwSignal<String>) -> impl IntoView {
+pub fn TextField(
+    #[prop(into)] id: Signal<String>,
+    #[prop(into)] label: Signal<String>,
+    #[prop(into)] value: RwSignal<String>,
+) -> impl IntoView {
     view! {
         <div class="flex gap-32">
             <label for=move || id.get() class="text-lg">
@@ -18,4 +22,3 @@ pub fn TextField(#[prop(into)] id: Signal<String>, #[prop(into)] label: Signal<S
         </div>
     }
 }
-

@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use js_sys::Promise;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen_futures::JsFuture;

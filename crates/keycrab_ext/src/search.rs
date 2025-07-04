@@ -1,5 +1,5 @@
+use crate::{common::input::TextInput, context::SearchContext};
 use leptos::prelude::*;
-use crate::{context::SearchContext, common::input::TextInput};
 
 #[component]
 pub fn Search() -> impl IntoView {
