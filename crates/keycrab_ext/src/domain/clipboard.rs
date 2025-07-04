@@ -2,7 +2,7 @@ use keycrab_models::responses::DomainInfo;
 use leptos::{prelude::*, task::spawn_local};
 
 use super::api;
-use crate::{browser, button::IconButton};
+use crate::{browser, common::icon::IconButton};
 
 async fn write_password_to_clipboard(domain: DomainInfo) {
     let password = api::decrypt(domain.domain, domain.username).await;

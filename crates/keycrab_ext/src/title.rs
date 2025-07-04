@@ -1,4 +1,4 @@
-use crate::{button::IconButton, search::Search};
+use crate::{common::link::IconLink, search::Search};
 use leptos::prelude::*;
 
 #[component]
@@ -14,7 +14,7 @@ pub fn Title() -> impl IntoView {
                 <div class="max-w-64 w-full">
                     <Search />
                 </div>
-                <IconButton icon="iconoir-settings" />
+                <IconLink icon="iconoir-settings" href="/settings" />
             </div>
         </div>
     }

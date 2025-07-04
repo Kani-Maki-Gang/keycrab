@@ -2,7 +2,7 @@ use keycrab_models::responses::DomainInfo;
 use leptos::prelude::*;
 
 use crate::{
-    button::IconButton,
+    common::icon::IconButton,
     domain::{api, clipboard::ClipboardButton, fill::FillButton},
 };
 
