@@ -27,36 +27,34 @@ pub fn DomainEntry(#[prop(into)] domain: Signal<DomainInfo>) -> impl IntoView {
         .to_string()
     });
     view! {
-        <div class="hover:bg-slate-700 focus:rounded-xl focus:border-1 focus:border-slate-600">
-            <div class="flex items-center gap-4 py-4 mx-6">
-                <div class="size-7 rounded-md bg-red-900 text-center text-2xl grid place-items-center">
-                    <i class="iconoir-lock-square"></i>
-                </div>
-                <div class="flex flex-col grow">
-                    <span class="text-lg">{move || domain.get().domain}</span>
-                    <div class="flex gap-2 text-md">
-                        <span class="font-semibold">username:</span>
-                        {move || domain.get().username}
-                    </div>
-                    <div class="flex gap-2 text-md">
-                        <span class="font-semibold">password:</span>
-                        <Show
-                            when=move || show_password.get()
-                            fallback=move || view! { "•••••••••••••" }
-                        >
-                            {move || password.get()}
-                        </Show>
-                    </div>
-                </div>
-                <FillButton domain=domain />
-                <ClipboardButton domain=domain />
-                <IconButton
-                    icon=icon
-                    on:click=move |_| {
-                        show_password.update(|x| *x = !(*x));
-                    }
-                />
+        <div class="flex items-center gap-4 py-4 px-6 hover:bg-gray-700">
+            <div class="size-7 rounded-md bg-red-900 text-center text-2xl grid place-items-center">
+                <i class="iconoir-lock-square"></i>
             </div>
+            <div class="flex flex-col grow">
+                <span class="text-lg">{move || domain.get().domain}</span>
+                <div class="flex gap-2 text-md">
+                    <span class="font-semibold">username:</span>
+                    {move || domain.get().username}
+                </div>
+                <div class="flex gap-2 text-md">
+                    <span class="font-semibold">password:</span>
+                    <Show
+                        when=move || show_password.get()
+                        fallback=move || view! { "•••••••••••••" }
+                    >
+                        {move || password.get()}
+                    </Show>
+                </div>
+            </div>
+            <FillButton domain=domain />
+            <ClipboardButton domain=domain />
+            <IconButton
+                icon=icon
+                on:click=move |_| {
+                    show_password.update(|x| *x = !(*x));
+                }
+            />
         </div>
     }
 }

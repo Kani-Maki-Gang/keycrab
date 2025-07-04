@@ -20,7 +20,7 @@ pub fn Domains() -> impl IntoView {
         <div class="fixed top-0 right-0 left-0 border-b-1 border-slate-600 z-40">
             <Title />
         </div>
-        <div class="flex flex-col divide-y divide-slate-600 gap-4 pt-24">
+        <div class="flex flex-col divide-y divide-slate-600 mt-24">
             <Show
                 when=move || domains.get().is_some()
                 fallback=move || view! { <div class="text-xl text-gray-400">"Loading..."</div> }
