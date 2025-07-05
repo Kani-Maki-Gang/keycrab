@@ -29,8 +29,8 @@ pub fn Domains() -> impl IntoView {
             <Title />
         </div>
         <Show when=move || missing_settings() fallback=|| {}>
-            <div class="grid place-items-center">
-                <div class="flex items-center gap-2 border border-yellow-300 rounded px-2 py-1 mt-32 w-72">
+            <div class="fixed top-32 right-0 left-0 grid place-items-center">
+                <div class="flex items-center gap-2 border border-yellow-300 rounded px-2 py-1 w-72">
                     <i class="iconoir-warning-triangle text-yellow-300 text-xl"></i>
                     "You need to update your settings"
                 </div>
