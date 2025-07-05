@@ -11,7 +11,7 @@ pub fn Checkbox(
             <label id=move || id.get() class="text-lg">
                 {move || label.get()}
             </label>
-            <div class="grow pl-2">
+            <div class="grow pl-4">
                 <input
                     id=move || id.get()
                     type="checkbox"
