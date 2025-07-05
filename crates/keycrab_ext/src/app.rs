@@ -20,6 +20,7 @@ pub fn App() -> impl IntoView {
             <Routes fallback=|| "Not found">
                 <Route path=path!("/") view=Domains />
                 <Route path=path!("/settings") view=Settings />
+                <Route path=path!("/*any") view=Domains />
             </Routes>
         </Router>
     }
