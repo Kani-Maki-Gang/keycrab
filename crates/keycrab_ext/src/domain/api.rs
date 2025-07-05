@@ -5,7 +5,13 @@ use keycrab_models::{
 use leptos::prelude::RwSignal;
 use reqwest::Client;
 
-pub async fn search(query: String) -> Vec<RwSignal<DomainInfo>> {
+use crate::context::SettingsContext;
+
+pub async fn search(query: String, settings: Option<SettingsContext>) -> Vec<RwSignal<DomainInfo>> {
+    let Some(settings) = settings else {
+        return vec![];
+    };
+
     let Ok(builder) = Client::builder().build() else {
         return vec![];
     };
@@ -14,11 +20,8 @@ pub async fn search(query: String) -> Vec<RwSignal<DomainInfo>> {
         q: format!("%{query}%"),
     };
 
-    let response = builder
-        .get("http://localhost:3333/domain/search")
-        .query(&query)
-        .send()
-        .await;
+    let url = format!("{}/domain/search", settings.base_url());
+    let response = builder.get(url).query(&query).send().await;
 
     let Ok(response) = response else {
         return vec![];
@@ -31,22 +34,24 @@ pub async fn search(query: String) -> Vec<RwSignal<DomainInfo>> {
     data.credentials.into_iter().map(RwSignal::new).collect()
 }
 
-pub async fn decrypt(domain: String, username: String) -> String {
+pub async fn decrypt(
+    domain: String,
+    username: String,
+    settings: Option<SettingsContext>,
+) -> String {
+    let Some(settings) = settings else {
+        return String::new();
+    };
+
     let Ok(builder) = Client::builder().build() else {
         return String::new();
     };
 
     let query = DecryptQuery { domain, username };
 
-    let response = builder
-        .get("http://localhost:3333/domain/decrypt")
-        .query(&query)
-        .send()
-        .await;
-
-    let Ok(response) = response else {
+    let url = format!("{}/domain/decrypt", settings.base_url());
+    let Ok(response) = builder.get(url).query(&query).send().await else {
         return String::new();
     };
-
     response.json::<String>().await.unwrap_or_default()
 }
