@@ -7,7 +7,8 @@ use crate::{
         script::load_fill_form,
         tab::{self, send_fill_command},
     },
-    common::icon::IconButton, context::SettingsContext,
+    common::icon::IconButton,
+    context::SettingsContext,
 };
 
 use super::api;

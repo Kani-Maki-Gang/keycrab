@@ -6,7 +6,9 @@ pub fn Title() -> impl IntoView {
     let settings = use_context::<RwSignal<SettingsContext>>();
     let missing_settings = move || {
         let settings = settings.get();
-        settings.map(|x| x.host.is_empty() || x.port.is_empty()).unwrap_or_default()
+        settings
+            .map(|x| x.host.is_empty() || x.port.is_empty())
+            .unwrap_or_default()
     };
     view! {
         <div class="grid items-center h-24 bg-gray-800">
