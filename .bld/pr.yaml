@@ -1,0 +1,42 @@
+name: PR workflow
+version: 2
+
+runs_on:
+  name: keycrab-image
+  dockerfile: ${{ bld_root_dir }}/dockerfiles/Dockerfile
+  tag: latest
+
+variables:
+  branch: master
+
+jobs:
+  main:
+    - name: Checkout repository
+      exec:
+        - git clone -b ${{ branch }} https://github.com/Kani-Maki-Gang/keycrab.git
+
+    - name: Run formatting checks
+      working_dir: keycrab
+      exec:
+        - cargo fmt --check
+
+    - name: Run lints
+      working_dir: keycrab
+      exec:
+        - cargo clippy
+
+    - name: Run all tests
+      working_dir: keycrab
+      exec:
+        - cargo test --all
+
+    - name: Build backend
+      working_dir: keycrab
+      exec:
+        - cargo build --release
+
+    - name: Build extension ui
+      working_dir: keycrab/crates/keycrab_ext
+      exec:
+        - trunk build --release
+

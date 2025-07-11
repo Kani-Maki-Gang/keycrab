@@ -1,11 +1,11 @@
-runs_on: machine
+name: Release keycrab pipeline
 version: 2
+
+runs_on: machine
 
 jobs:
   main:
-  - working_dir: ${{bld_project_dir}}
-    exec:
-    - rm -r dist || true
-    - mkdir dist || true
-    - ext: release/extension.yaml
-    - ext: release/server.yaml
+    - exec:
+        - rm -r dist/ || true || mkdir dist/ || true
+        - ext: release/extension.yaml
+        - ext: release/server.yaml

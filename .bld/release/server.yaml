@@ -1,8 +1,24 @@
-runs_on: machine
+name: Release keycrab server pipeline
 version: 2
+
+runs_on:
+  name: keycrab-image
+  dockerfile: ${{ bld_root_dir }}/dockerfiles/pr.Dockerfile
+  tag: latest
+
+artifacts:
+  - method: get
+    from: bld/target/release/keycrab
+    to: dist/
+    after: Build backend
 
 jobs:
   main:
-  - cargo build --release
-  - mkdir ${{bld_project_dir}}/dist/server
-  - cp target/release/keycrab ${{bld_project_dir}}/dist/server
+    - name: Checkout repository
+      exec:
+        - git clone https://github.com/Kani-Maki-Gang/keycrab.git
+
+    - name: Build backend
+      working_dir: keycrab
+      exec:
+        - cargo build --release

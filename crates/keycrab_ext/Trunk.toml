@@ -1,7 +1,7 @@
 [[hooks]]
 stage = "pre_build"
 command = "bash"
-command_arguments = ["-c", "npx @tailwindcss/cli -i ./styles.css -o $TRUNK_STAGING_DIR/styles.css"]
+command_arguments = ["-c", "npm i && npx @tailwindcss/cli -i ./styles.css -o $TRUNK_STAGING_DIR/styles.css"]
 
 [[hooks]]
 stage = "post_build"

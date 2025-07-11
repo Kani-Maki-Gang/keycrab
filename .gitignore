@@ -4,6 +4,8 @@
 /.bld/*
 !/.bld/config.yaml
 !/.bld/release
+!/.bld/pr.yaml
+!/.bld/dockerfiles
 **/*/dist/*
 
 node_modules

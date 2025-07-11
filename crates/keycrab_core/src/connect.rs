@@ -1,7 +1,7 @@
 use std::{fs::File, path::Path};
 
 use anyhow::{anyhow, Result};
-use sqlx::{sqlite::SqlitePoolOptions, Connection, SqliteConnection, SqlitePool, migrate};
+use sqlx::{migrate, sqlite::SqlitePoolOptions, Connection, SqliteConnection, SqlitePool};
 
 pub async fn new_connection(database: &str) -> Result<SqliteConnection> {
     SqliteConnection::connect(database)
@@ -21,9 +21,7 @@ pub async fn new_pool(database: &str) -> Result<SqlitePool> {
         .await
         .map_err(|e| anyhow!(e))?;
 
-    migrate!("./migrations")
-        .run(&pool)
-        .await?;
+    migrate!("./migrations").run(&pool).await?;
 
     Ok(pool)
 }
