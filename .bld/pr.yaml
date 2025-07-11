@@ -3,7 +3,7 @@ version: 2
 
 runs_on:
   name: keycrab-image
-  dockerfile: ${{ bld_root_dir }}/dockerfiles/pr.Dockerfile
+  dockerfile: ${{ bld_root_dir }}/dockerfiles/Dockerfile
   tag: latest
 
 variables:
