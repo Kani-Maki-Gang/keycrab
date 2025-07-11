@@ -1,26 +1,24 @@
-runs_on: machine
+name: Release keycrab extension pipeline
 version: 2
+
+runs_on:
+  name: keycrab-image
+  dockerfile: ${{ bld_root_dir }}/dockerfiles/Dockerfile
+  tag: latest
+
+artifacts:
+  - method: get
+    from: bld/crates/keycrab_ext/dist
+    to: dist/extensions
+    after: Build extension ui
 
 jobs:
   main:
-  - name: Build with dioxus
-    working_dir: ${{bld_project_dir}}/browser/keycrab_ext
-    exec:
-    - dioxus build --release
+    - name: Checkout repository
+      exec:
+        - git clone https://github.com/Kani-Maki-Gang/keycrab.git
 
-  - name: Rerun tailwind build with release
-    working_dir: ${{bld_project_dir}}/browser/keycrab_ext/scripts
-    exec:
-    - npm run build-release
-
-  - name: Copy artifacts
-    working_dir: ${{bld_project_dir}}/browser/keycrab_ext/dist
-    exec:
-      - mkdir ${{bld_project_dir}}/dist/extension || true
-      - cp -r ./assets ${{bld_project_dir}}/dist/extension
-      - cp ./index.html ${{bld_project_dir}}/dist/extension
-      - cp ./tailwind.css ${{bld_project_dir}}/dist/extension
-      - cp ./index.js ${{bld_project_dir}}/dist/extension
-      - cp ./fill_form.js ${{bld_project_dir}}/dist/extension
-      - cp ${{bld_project_dir}}/browser/ff/manifest.json ${{bld_project_dir}}/dist/extension
-      - cp -r ${{bld_project_dir}}/browser/ff/icons ${{bld_project_dir}}/dist/extension/
+    - name: Build extension ui
+      working_dir: keycrab/crates/keycrab_ext
+      exec:
+        - trunk build --release
