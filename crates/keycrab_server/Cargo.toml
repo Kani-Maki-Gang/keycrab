@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 keycrab_core = { path = "../keycrab_core" }
 keycrab_crypt = { path = "../keycrab_crypt" }
+keycrab_models = { path = "../keycrab_models" }
 anyhow = "1.0.70"
 axum = "0.6.11"
 serde = { version = "1.0.157", features = ["derive"] }

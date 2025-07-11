@@ -4,3 +4,5 @@ version: 2
 jobs:
   main:
   - cargo build --release
+  - mkdir ${{bld_project_dir}}/dist/server
+  - cp target/release/keycrab ${{bld_project_dir}}/dist/server

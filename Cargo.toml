@@ -5,11 +5,12 @@ edition = "2021"
 
 [workspace]
 members = [
-    "browser/keycrab_ext",
+    "crates/keycrab_ext",
     "crates/keycrab_core",
     "crates/keycrab_crypt",
     "crates/keycrab_server",
     "crates/keycrab_cli",
+    "crates/keycrab_models",
 ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

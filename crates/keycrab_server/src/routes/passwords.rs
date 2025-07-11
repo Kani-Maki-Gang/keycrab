@@ -1,13 +1,7 @@
 use std::sync::Arc;
 
-use crate::{
-    requests::passwords::{PasswordCreateRequest, PasswordIdQuery, SearchQuery},
-    responses::{
-        errors::ApplicationError,
-        passwords::{DomainInfo, DomainSearchResult, PasswordCreateResponse},
-    },
-    state::ApplicationState,
-};
+use crate::{errors::ApplicationError, state::ApplicationState};
+use anyhow::anyhow;
 use axum::{
     extract::{Query, State},
     routing::{delete, get, post},
@@ -15,6 +9,10 @@ use axum::{
 };
 use keycrab_core::passwords::Password;
 use keycrab_crypt::{gpg::GpgProxy, traits::CryptoProvider};
+use keycrab_models::{
+    requests::{DecryptQuery, PasswordCreateRequest, PasswordIdQuery, SearchQuery},
+    responses::{DomainInfo, DomainSearchResult, PasswordCreateResponse},
+};
 use tracing::info;
 
 async fn search_domain_credentials(
@@ -22,10 +20,6 @@ async fn search_domain_credentials(
     params: Query<SearchQuery>,
 ) -> Result<Json<DomainSearchResult>, ApplicationError> {
     let mut conn = state.pool.get().await?;
-    let proxy = GpgProxy::new(
-        state.machine_user.name.clone(),
-        state.config.fingerprint.clone(),
-    );
     let response = Password::search_domains(&mut conn, &state.machine_user.id, &params.q)
         .await
         .map(|c| DomainSearchResult {
@@ -36,13 +30,31 @@ async fn search_domain_credentials(
                         id: p.rowid,
                         domain: p.domain,
                         username: p.username,
-                        password: proxy.decrypt(p.password)?,
                     })
                 })
                 .collect(),
         })?;
 
     Ok(Json(response))
+}
+
+async fn decrypt_domain_password(
+    State(state): State<Arc<ApplicationState>>,
+    params: Query<DecryptQuery>,
+) -> Result<Json<String>, ApplicationError> {
+    let mut conn = state.pool.get().await?;
+    let domains = Password::get_by_domain(&mut conn, &params.domain).await?;
+
+    if let Some(domain) = domains.into_iter().find(|x| x.username == params.username) {
+        let proxy = GpgProxy::new(
+            state.machine_user.name.clone(),
+            state.config.fingerprint.clone(),
+        );
+        let password = proxy.decrypt(domain.password)?;
+        Ok(Json(password))
+    } else {
+        Err(ApplicationError(anyhow!("entry not found")))
+    }
 }
 
 async fn post_domain_credentials(
@@ -93,4 +105,5 @@ pub fn router() -> Router<Arc<ApplicationState>> {
         .route("/domain", post(post_domain_credentials))
         .route("/domain", delete(delete_domain_credentials))
         .route("/domain/search", get(search_domain_credentials))
+        .route("/domain/decrypt", get(decrypt_domain_password))
 }

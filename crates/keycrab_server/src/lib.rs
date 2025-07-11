@@ -1,15 +1,14 @@
-mod requests;
-mod responses;
+mod errors;
 mod routes;
 mod state;
 
 use anyhow::{anyhow, Result};
-use axum::{Router, http::Method};
+use axum::{http::Method, Router};
 use keycrab_core::{machine_users::MachineUser, traits::IntoArc};
 use routes::{machine_users, passwords};
 use state::ApplicationState;
-use tower_http::cors::{Any, CorsLayer};
 use std::sync::Arc;
+use tower_http::cors::{Any, CorsLayer};
 use tracing::info;
 
 use crate::state::{config::Configuration, database::DatabasePool};
@@ -43,9 +42,7 @@ pub async fn start(host: &str, port: &str, database: &str, fingerprint: &str) ->
         .allow_origin(Any);
 
     // initialize app.
-    let app = api_router()
-        .with_state(state)
-        .layer(cors);
+    let app = api_router().with_state(state).layer(cors);
 
     // start server.
     let url = format!("{host}:{port}");

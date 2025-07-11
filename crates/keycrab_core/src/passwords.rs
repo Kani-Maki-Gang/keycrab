@@ -62,10 +62,10 @@ impl Password {
             .map_err(|e| anyhow!(e))
     }
 
-    pub async fn get_by_domain(conn: &mut SqliteConnection, domain: &str) -> Result<Self> {
+    pub async fn get_by_domain(conn: &mut SqliteConnection, domain: &str) -> Result<Vec<Self>> {
         query_as::<_, Self>(GET_BY_DOMAIN_QUERY)
             .bind(domain)
-            .fetch_one(conn)
+            .fetch_all(conn)
             .await
             .map_err(|e| anyhow!(e))
     }
@@ -75,6 +75,8 @@ impl Password {
         machine_user_id: &str,
         domain: &str,
     ) -> Result<Vec<Self>> {
+        dbg!(&machine_user_id);
+        dbg!(&domain);
         query_as::<_, Self>(SEARCH_DOMAINS)
             .bind(domain)
             .bind(machine_user_id)

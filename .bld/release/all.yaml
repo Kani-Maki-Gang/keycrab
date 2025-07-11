@@ -8,8 +8,4 @@ jobs:
     - rm -r dist || true
     - mkdir dist || true
     - ext: release/extension.yaml
-    - mkdir dist/extension
-    - cp -r browser/ff/* dist/extension
     - ext: release/server.yaml
-    - mkdir dist/server
-    - cp target/release/keycrab dist/server
