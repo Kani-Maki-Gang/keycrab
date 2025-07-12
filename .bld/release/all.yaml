@@ -6,6 +6,6 @@ runs_on: machine
 jobs:
   main:
     - exec:
-        - rm -r dist/ || true || mkdir dist/ || true
+        - rm -rf dist/ && mkdir -p dist/extensions
         - ext: release/extension.yaml
         - ext: release/server.yaml

@@ -8,7 +8,7 @@ runs_on:
 
 artifacts:
   - method: get
-    from: bld/crates/keycrab_ext/dist
+    from: keycrab/crates/keycrab_ext/dist/
     to: dist/extensions
     after: Build extension ui
 
