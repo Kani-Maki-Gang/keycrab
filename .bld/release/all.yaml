@@ -3,9 +3,16 @@ version: 2
 
 runs_on: machine
 
+variables:
+  branch: master
+
 jobs:
   main:
     - exec:
         - rm -rf dist/ && mkdir -p dist/extensions
         - ext: release/extension.yaml
+          variables:
+            branch: ${{ branch }}
         - ext: release/server.yaml
+          variables:
+            branch: ${{ branch }}

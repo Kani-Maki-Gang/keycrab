@@ -6,6 +6,9 @@ runs_on:
   dockerfile: ${{ bld_root_dir }}/dockerfiles/Dockerfile
   tag: latest
 
+variables:
+  branch: master
+
 artifacts:
   - method: get
     from: keycrab/target/release/keycrab
@@ -16,7 +19,7 @@ jobs:
   main:
     - name: Checkout repository
       exec:
-        - git clone https://github.com/Kani-Maki-Gang/keycrab.git
+        - git clone -b ${{ branch}} https://github.com/Kani-Maki-Gang/keycrab.git
 
     - name: Build backend
       working_dir: keycrab
