@@ -1,4 +1,5 @@
 name: Release keycrab extension pipeline
+
 version: 2
 
 runs_on:
