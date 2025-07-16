@@ -1,0 +1,40 @@
+name: Release workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "The tag to be created"
+        required: true
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    name: PR pipeline
+
+    permissions:
+      contents: write
+      issues: write
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get branch name
+        id: get_branch_name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+      - name: Run bld pipeline
+        uses: Kani-Maki-Gang/bld-github-action@v0.3.1-alpha
+        with:
+          pipeline: 'release/all.yaml'
+          variables: |-
+            branch=${{ steps.get_branch_name.outputs.branch }}
+            tag=${{ inputs.tag }}
+            user=${{ github.actor }}
+            user_email=${{ github.actor }}@users.noreply.github.com
+            token=${{ secrets.GITHUB_TOKEN }}
+
+

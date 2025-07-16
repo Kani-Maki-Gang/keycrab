@@ -3,9 +3,36 @@ version: 2
 
 runs_on: machine
 
+variables:
+  tag: ""
+  user: ""
+  user_email: ""
+  token: ""
+  branch: master
+
+external:
+  - pipeline: release/extension.yaml
+    variables:
+      branch: ${{ branch }}
+
+  - pipeline: release/server.yaml
+    variables:
+      branch: ${{ branch }}
+
+  - pipeline: release/github.yaml
+    variables:
+      tag: ${{ tag }}
+      user: ${{ user }}
+      user_email: ${{ user_email }}
+      token: ${{ token }}
+
 jobs:
   main:
-    - exec:
-        - rm -r dist/ || true || mkdir dist/ || true
-        - ext: release/extension.yaml
-        - ext: release/server.yaml
+    - name: Create dist directory
+      exec:
+        - rm -rf ${{ bld_project_dir}}/dist && mkdir -p ${{ bld_project_dir }}/dist/extensions
+
+    - ext: release/extension.yaml
+    - ext: release/server.yaml
+    - ext: release/github.yaml
+

@@ -6,6 +6,8 @@
 !/.bld/release
 !/.bld/pr.yaml
 !/.bld/dockerfiles
+
+dist/
 **/*/dist/*
 
 node_modules

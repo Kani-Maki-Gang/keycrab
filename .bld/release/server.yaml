@@ -3,12 +3,15 @@ version: 2
 
 runs_on:
   name: keycrab-image
-  dockerfile: ${{ bld_root_dir }}/dockerfiles/pr.Dockerfile
+  dockerfile: ${{ bld_root_dir }}/dockerfiles/Dockerfile
   tag: latest
+
+variables:
+  branch: master
 
 artifacts:
   - method: get
-    from: bld/target/release/keycrab
+    from: keycrab/target/release/keycrab
     to: dist/
     after: Build backend
 
@@ -16,7 +19,7 @@ jobs:
   main:
     - name: Checkout repository
       exec:
-        - git clone https://github.com/Kani-Maki-Gang/keycrab.git
+        - git clone -b ${{ branch}} https://github.com/Kani-Maki-Gang/keycrab.git
 
     - name: Build backend
       working_dir: keycrab

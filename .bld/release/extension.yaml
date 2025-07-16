@@ -1,4 +1,5 @@
 name: Release keycrab extension pipeline
+
 version: 2
 
 runs_on:
@@ -6,9 +7,12 @@ runs_on:
   dockerfile: ${{ bld_root_dir }}/dockerfiles/Dockerfile
   tag: latest
 
+variables:
+  branch: master
+
 artifacts:
   - method: get
-    from: bld/crates/keycrab_ext/dist
+    from: keycrab/crates/keycrab_ext/dist/
     to: dist/extensions
     after: Build extension ui
 
@@ -16,7 +20,7 @@ jobs:
   main:
     - name: Checkout repository
       exec:
-        - git clone https://github.com/Kani-Maki-Gang/keycrab.git
+        - git clone -b ${{ branch }} https://github.com/Kani-Maki-Gang/keycrab.git
 
     - name: Build extension ui
       working_dir: keycrab/crates/keycrab_ext
